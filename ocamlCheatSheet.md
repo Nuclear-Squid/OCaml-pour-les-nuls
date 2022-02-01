@@ -38,3 +38,54 @@
 6.  définir un type:
 	<!-- FIXME: Pas oublier de remplir ça ce soir. -->
 	- lol j'ai pas compris, on verra ça plus tard
+
+
+
+## Tests et conditions:
+
+1.  Tests avec `if`:
+	- syntaxe:
+
+		```
+		if <expression_booléenne> then
+			<expression>
+		else if <expr_bool> then
+			<expression>
+		...
+		else
+			<expression>
+		```
+
+	- tous les types de sortie doivent être identique.
+	- un if qui renvoie `true` ou `false` est (en général) inutile.
+	- exemples:
+		-   ```
+			let y = 15
+			if x >= 10 then 
+				moyenne x y
+			else
+				moyenne 10 y
+			```
+
+		- `if estPair a then a + 1`
+2.  Les match-expressions (ou pattern matching):
+	- syntaxe:
+
+		```
+		match <expression> with
+		| <val1>          -> <expression 1>
+		| <val2> | <val3> -> <expression 2>
+		| <variable>      -> <dernière expression>
+		```
+
+	- toutes les expressions de sorties doivent renvoyer le même type.
+	- le cas `<variable>` va "récupérer" tous les cas non traité, cette variable peut être utilisé dans l'expression associé.
+	- exemple, on verifie que le jour donné est possible:
+		
+		```
+		match mois with
+		| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
+		| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
+		| 2							  -> (1 <= jour) && (jour <= 28)
+		| _							  -> false
+		```
