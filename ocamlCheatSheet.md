@@ -1,5 +1,21 @@
 # OcaML Cheat Sheet
 
+## Commandes en vrac:
+
+- caster un type dans un autre:
+	- `float_of_int <int>` : renvoie la même valeur mais en `float`
+	- `int_of_float <float>` : renvoie la partie entière du float (entier arrondi en dessous)
+- Afficher un message dans la console avec `Printf.printf "message" (<variable>)`
+	- charactères utiles:
+		- `\n` revient à la ligne, souvent utilisé en fin de message.
+		- `%!` vide le buffer du print. Absolument **toujours** l'utiliser en **fin** de message. Ne pas le mettre veut dire ne jamais libérer la mémoire utilisé par le print, donc de plus en plus de mémoire inutilement inutilisé après chaque printf. Non je sais pas pourquoi il faut le préciser.
+	- pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`. Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
+	- exemples:
+		- `Printf.printf "%i\n%!" (12)`
+			-> "12"
+		- `Printf.printf "Les variables x et b valent respectivement %f et %b\n%!" (x b)`
+			-> "Les variables x et b valent resdectivement 42.12 et false"
+
 ## Types de donnés, variables et fonctions:
 
 1.  types de donnés:
@@ -8,6 +24,7 @@
 	- `bool` (true / false)
 	- `char` (un seul caractère: 'a')
 	- `str` (une chaîne de caractères: "AAAAAA")
+	- `unit` (ne renvoie rien)
 	- toujours faire très attentions au types utilisé.
 2.  opérateurs:
 	- pour les int: `+`; `-`; `*` (fois); `/` (division)
@@ -19,6 +36,7 @@
 	- exemples:
 		- `let x : int = 69`
 		- `let b : bool = true`
+	- remarque: une variable est une fonction sans argument qui renvoie une constante.
 4.  déclarer une fonction:
 	- syntaxe: `let <nom_de_la_fonction> <arguments> : <type_de_sortie> = <expression>`
 	- pour chaque argument, on fait `(<nom_argument>: <type_argument>)`
@@ -27,6 +45,7 @@
 		- `let carre (x: float) : float = x*x`
 		- `let estPair (x: int) : bool = (x mod 2 = 0)` (mod: division euclidienne de deux entiers)
 		- `let moyenne (x: float) (y: float) : float = (x + y) / 2`
+		- `let mesage : unit = Printf.printf "un message très utile \n%!"`
 5.  appeler une fonction:
 	- syntaxe: `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
 	- appeler une fonction revient a utiliser une fonction prédéfinie, avec des variables donnés en entré.
@@ -36,6 +55,7 @@
 		- `estPair (-3)` (renvoie false, nombre négatifs doivent être entre parenthèses)
 		- `moyenne 12.5 16.5` (renvoie 14.5)
 		- `moyenne (12.5 16.5)` (erreur, car la fonction voit le groupe de parenthèses comme un seul argument, donc il manque un argument).
+		- `message` (renvoie rien, affiche "un message très utile" dans la console)
 6.  définir un type:
 	<!-- FIXME: Pas oublier de remplir ça ce soir. -->
 	- lol j'ai pas compris, on verra ça plus tard
