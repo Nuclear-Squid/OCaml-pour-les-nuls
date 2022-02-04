@@ -1,4 +1,4 @@
-# OcaML Cheat Sheet
+# OCaml Cheat Sheet
 
 ## Commandes en vrac:
 
@@ -7,7 +7,7 @@
 	- exemple:
 		- Version moche
 
-		```
+		```ocaml
 		let x : int = 12;;
 		let y : int = 15;;
 		let z : float = 14.5;;
@@ -15,7 +15,7 @@
 
 		- Version propre
 
-		```
+		```ocaml
 		let x : int = 12
 		let y : int = 15
 		let z : float = 14.5
@@ -86,7 +86,7 @@
 1.  Tests avec `if`:
 	- syntaxe:
 
-		```
+		```ocaml
 		if <expression_booléenne> then
 			<expression>
 		else if <expr_bool> then
@@ -101,7 +101,7 @@
 	- exemples:
 		-
 
-			```
+			```ocaml
 			let y = 15
 			if x >= 10 then 
 				moyenne x y
@@ -113,7 +113,7 @@
 2.  Les match-expressions (ou pattern matching):
 	- syntaxe:
 
-		```
+		```ocaml
 		match <expression> with
 		| <val1> | <val2> | ... | <valn> -> <expression 1>
 		...
@@ -124,7 +124,7 @@
 	- le cas `<variable>` va "récupérer" tous les cas non traité, cette variable peut être utilisé dans l'expression associé.
 	- exemple, on verifie que le jour donné est possible:
 		
-		```
+		```ocaml
 		match mois with
 		| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 		| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
@@ -144,7 +144,7 @@
 		- `let a = x*2 and b = y*2 in moyenne a b`
 		- 
 
-		```
+		```ocaml
 		let min4 (a: int) (b: int) (c: int) (d: int) : int =
 			let min2 (x: int) (y: int) = 
 				if x < y then x else y
