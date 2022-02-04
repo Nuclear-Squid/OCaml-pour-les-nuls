@@ -10,9 +10,10 @@
 	- `str` (une chaîne de caractères: "AAAAAA")
 	- toujours faire très attentions au types utilisé.
 2.  opérateurs:
-	- pour les int: `+`; `-`; `*` (fois); `/` (division)
+	- pour les int: `+`; `-`; `*` (fois); `/` (division)
 	- pour les floats: parreil que pour les ints, mais suivis d'un point (ex: `+.`)
 	- pour les bools: `||` (ou); `&&` (et); `not` (inverse la valeur du booléen); `=` (est égal à); `<>` (est différent à); `>` (suppérieur) `<=` (inférieur ou égal)
+	- pour les strings: "^" pour concaténer les chaines (les mettre bout à bout).
 3.  déclarer une variable:
 	- syntaxe: `let <nom_de_la_variable> : <type> = <valeur>`
 	- exemples:
@@ -59,7 +60,9 @@
 	- tous les types de sortie doivent être identique.
 	- un if qui renvoie `true` ou `false` est (en général) inutile.
 	- exemples:
-		-   ```
+		-
+
+			```
 			let y = 15
 			if x >= 10 then 
 				moyenne x y
@@ -73,9 +76,9 @@
 
 		```
 		match <expression> with
-		| <val1>          -> <expression 1>
-		| <val2> | <val3> -> <expression 2>
-		| <variable>      -> <dernière expression>
+		| <val1> | <val2> | ... | <valn> -> <expression 1>
+		...
+		| <variable>					 -> <dernière expression>
 		```
 
 	- toutes les expressions de sorties doivent renvoyer le même type.
@@ -87,5 +90,25 @@
 		| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 		| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
 		| 2							  -> (1 <= jour) && (jour <= 28)
-		| _							  -> false
+		| n							  -> Printf.printf "le mois %d n'existe pas\n%!" (n); false;;
+		```
+
+
+## Composition de fonctions:
+
+1.  Le mot clé `in`:
+	- syntaxe: `let <var/func> = <expression> and <var/func> = <expression> and ... in <expression>`
+	- permet de faire de la composition de fonction (comme f•g en maths).
+	- exemples:
+		- `let x = carre y in estPair x`
+		- `let a = x*2 and b = y*2 in moyenne a b`
+		- 
+
+		```
+		let min4 (a: int) (b: int) (c: int) (d: int) : int =
+			let min2 (x: int) (y: int) = 
+				if x > y then x else y
+			in
+			let m = min2 a b and n = min2 c d in
+			min2 m n
 		```
