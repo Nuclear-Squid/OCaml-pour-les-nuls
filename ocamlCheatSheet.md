@@ -24,9 +24,9 @@ let z : float = 14.5
 ### caster un type dans un autre
 
 ```ocaml
-float_of_int <int> (* renvoie la même valeur mais en `float` *)
-int_of_float <float> (* renvoie la partie entière du float (entier arrondi en dessous) *)
-string_of_int <int> (* transforme un entier en une chaine de caractère *)
+float_of_int <int>      (* renvoie la même valeur mais en `float` *)
+int_of_float <float>    (* renvoie la partie entière du float (entier arrondi en dessous) *)
+string_of_int <int>     (* transforme un entier en une chaine de caractère *)
 string_of_float <float> (* transforme un flotant en une chaine de caractère *)
 ```
 
@@ -50,7 +50,7 @@ Printf.printf "%i\n%!" (12) (* écrit dans le terminal "12" *)
 Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12 et b = false" *)
 ```
 
-## Types de donnés, variables et fonctions 
+## Types de donnés, variables et fonctions
 
 ### types de données
 
@@ -75,7 +75,7 @@ pour les int: `+`; `-`; `*` (multiplication); `/` (division)
 
 pour les floats: parreil que pour les ints, mais suivis d'un point (ex: `+.`)
 
-pour les bools: `||` (ou); `&&` (et); `not` (inverse la valeur du booléen);
+pour les bools: `||` (ou); `&&` (et); `not` (inverse la valeur du booléen)
 
 comparaisons:  `=` (est égal à); `<>` (est différent à); `>` (suppérieur); `>=` (suppérieur ou égal); `<` (inférieur) `<=` (inférieur ou égal) (ces opérateurs renvoient des boolées).
 
@@ -117,7 +117,7 @@ let mesage : unit = Printf.printf "un message très utile \n%!"
 
 ### appeler une fonction
 
-syntaxe: `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
+syntaxe : `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
 
 appeler une fonction revient a utiliser une fonction prédéfinie, avec des variables donnés en entré.
 
@@ -126,18 +126,12 @@ appeler une fonction revient a utiliser une fonction prédéfinie, avec des vari
 exemples :
 
 ```ocaml
-carre 5 (* renvoie 25 *)
-estPair (-3) (* renvoie false, nombre négatifs doivent être entre parenthèses *)
-moyenne 12.5 16.5 (* renvoie 14.5 *)
+carre 5             (* renvoie 25 *)
+estPair (-3)        (* renvoie false, nombre négatifs doivent être entre parenthèses *)
+moyenne 12.5 16.5   (* renvoie 14.5 *)
 moyenne (12.5 16.5) (* erreur, car la fonction voit le groupe de parenthèses comme un seul argument, donc il manque un argument *).
-message (* renvoie rien, affiche "un message très utile" dans la console *)
+message             (* renvoie rien, affiche "un message très utile" dans la console *)
 ```
-
-### définir un type
-
-<!-- FIXME: Pas oublier de remplir ça ce soir. -->
-lol j'ai pas compris, on verra ça plus tard
-
 
 
 ## Tests et conditions
@@ -238,4 +232,75 @@ exemples :
 ```ocaml
 Printf.printf "le mois %i n'existe pas\n%!" (n); false (* écrit dans le terminal "le mois <n> n'existe pas" et renvoie "false" *)
 message; message; moyenne 12 17 (* écrit deux fois de suite "un message très interessant" puis renvoie 14.5 (float) *)
+```
+
+
+## types customs et tuples
+
+### définir un type custom
+
+définir un type comme un alias d'un autre type peut permettre d'écrire un code plus simple à relire.
+
+syntaxe : `type <nom_du_type> = <type>`
+
+on peut aussi définir des types "énumérés". Les variables de ce type ne peuvent seulement valloir une des valeurs décrites:
+
+syntaxe : `type <nom_du_type> = <constructeur 1> | <constructeur 2> | ... | <constructeur n>`
+
+remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
+
+exemple : (voir catégorie tupules)
+
+### les tuples
+
+on peut définir ce qu'on appelle un `tuple`, ce qui est une sorte de liste python mais qu'on ne peut pas modifier.
+
+syntaxe : `let <nom_du_tuple> = (<var1>, <var2, ... <varn>: <type1> * <type2> * ... * <typen>)`
+
+les tuples sont utiles pour stoquer un groupe de données, mais permettent surtout de renvoyer plusieures variables en même temps avec une seule fonction.
+
+il est possible (et conseillé) de séparer la définition des type d'un tuple de la définition de ses éléments.
+
+exemple de types customs et tuples dans un petit programme :
+
+```ocaml
+(* calcule l'heure une seconde après l'heure actuelle *)
+
+type seconde = int
+type minute = int
+type heure = int
+type meridien = Am | Pm
+type horaire = heure * minute * seconde * meridien
+
+let horaire_suivant (h, m, s, mer: horaire) : horaire = 
+	if s = 59 then
+		if m = 59 then
+			if h = 11 then
+				if mer = Am then
+					(0, 0, 0, Pm)
+				else
+					(0, 0, 0, Am)
+			else
+				(h+1, 0, 0, mer)
+		else
+			(h, m+1, 0, mer)
+	else
+		(h, m, s+1, mer)
+;;
+```
+
+remarque : il est impossible de directement afficher la valeur d'un `tuple` ou d'un type énuméré dans le terminal. Il faut soit même créer une fonction pour transformer son `tuple` / `enum` en un `string`
+
+exemple :
+
+```ocaml
+let string_of_horaire (h, m, s, mer: horaire) : string =
+	(* les matchs expressions sont parfait pour caster des enums *)
+	let string_of_mer (m: meridien) =
+		match m with
+			| Am -> "Am"
+			| Pm -> "Pm"
+	in
+	string_of_int h ^ ":" ^ string_of_int m ^ ":" ^ string_of_int s ^ ":" ^ string_of_mer mer
+;;
 ```
