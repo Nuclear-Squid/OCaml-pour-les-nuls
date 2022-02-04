@@ -2,6 +2,25 @@
 
 ## Commandes en vrac:
 
+- le double point-virgule (`;;`):
+	- le `;;` doit être utilisé après la dernière affectation. Il n'y a pas besoin de le mettre après chaque fin de ligne, ni après un printf.
+	- exemple:
+		- Version moche
+
+		```
+		let x : int = 12;;
+		let y : int = 15;;
+		let z : float = 14.5;;
+		```
+
+		- Version propre
+
+		```
+		let x : int = 12
+		let y : int = 15
+		let z : float = 14.5
+		;;
+		```
 - caster un type dans un autre:
 	- `float_of_int <int>` : renvoie la même valeur mais en `float`
 	- `int_of_float <float>` : renvoie la partie entière du float (entier arrondi en dessous)
@@ -110,8 +129,9 @@
 		| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 		| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
 		| 2							  -> (1 <= jour) && (jour <= 28)
-		| n							  -> Printf.printf "le mois %d n'existe pas\n%!" (n); false;;
+		| n							  -> Printf.printf "le mois %i n'existe pas\n%!" (n); false
 		```
+		(voir la section 2 de "compositions de fonctions" pour l'explication du `;`)
 
 
 ## Composition de fonctions:
@@ -127,8 +147,13 @@
 		```
 		let min4 (a: int) (b: int) (c: int) (d: int) : int =
 			let min2 (x: int) (y: int) = 
-				if x > y then x else y
+				if x < y then x else y
 			in
 			let m = min2 a b and n = min2 c d in
 			min2 m n
 		```
+2.  Le simple point-virgule :
+	- le `;` permet d'enchainer des expressions sans rien passer à l'expression suivante, seule la dernière expression peut avoir un autre type que unit. Le type de sortie de l'enchainement d'expression est le type de sortie de la dernière expression.
+	- exemples:
+		- `Printf.printf "le mois %i n'existe pas\n%!" (n); false`
+		- `message; message; moyenne 12 17`
