@@ -1,56 +1,6 @@
 # OCaml Cheat Sheet
 
-## Commandes en vrac
-
-### le double point-virgule (`;;`)
-
-le `;;` doit être utilisé après la dernière affectation. Il n'y a pas besoin de le mettre après chaque fin de ligne, ni après un printf.
-
-exemple :
-
-```ocaml
-(* Version moche *)
-let x : int = 12;;
-let y : int = 15;;
-let z : float = 14.5;;
-
-(* Version propre *)
-let x : int = 12
-let y : int = 15
-let z : float = 14.5
-;;
-```
-
-### caster un type dans un autre
-
-```ocaml
-float_of_int <int>      (* renvoie la même valeur mais en `float` *)
-int_of_float <float>    (* renvoie la partie entière du float (entier arrondi en dessous) *)
-string_of_int <int>     (* transforme un entier en une chaine de caractère *)
-string_of_float <float> (* transforme un flotant en une chaine de caractère *)
-```
-
-### Afficher un message dans la console
-
-syntaxe: `Printf.printf "message" (<variable>)`
-
-caractères utiles :
-
-- `\n` revient à la ligne, souvent utilisé en fin de message.
-- `%!` vide le buffer du print. Absolument **toujours** l'utiliser en fin de message. Ne pas le mettre veut dire ne jamais libérer la mémoire utilisé par le printf, donc de plus en plus de mémoire inutilement inutilisé après chaque printf. Non je sais pas pourquoi il faut le préciser.
-
-pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`. Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
-
-`Printf.printf` est de type unit.
-
-exemples :
-
-```ocaml
-Printf.printf "%i\n%!" (12) (* écrit dans le terminal "12" *)
-Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12 et b = false" *)
-```
-
-## Types de donnés, variables et fonctions
+## Types de donnés
 
 ### types de données
 
@@ -69,7 +19,16 @@ Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12
 toujours faire très attentions au types utilisé.
 
 
-### opérateurs
+### caster un type dans un autre
+
+```ocaml
+float_of_int <int>      (* renvoie la même valeur mais en `float` *)
+int_of_float <float>    (* renvoie la partie entière du float (entier arrondi en dessous) *)
+string_of_int <int>     (* transforme un entier en une chaine de caractère *)
+string_of_float <float> (* transforme un flotant en une chaine de caractère *)
+```
+
+### les opérateurs
 
 pour les int: `+`; `-`; `*` (multiplication); `/` (division)
 
@@ -81,6 +40,8 @@ comparaisons:  `=` (est égal à); `<>` (est différent à); `>` (suppérieur); 
 
 pour les strings: `^` pour concaténer les chaines (les mettre bout à bout).
 
+
+## variables et fonctions
 
 ### déclarer une variable
 
@@ -96,7 +57,6 @@ let b : bool = true
 
 remarque: une variable est une fonction sans argument qui renvoie une constante.
 
-
 ### déclarer une fonction
 
 syntaxe: `let <nom_de_la_fonction> <arguments> : <type_de_sortie> = <expression>`
@@ -108,9 +68,9 @@ le type de sortie est le type de la valeur renvoyé.
 exemple :
 
 ```ocaml
-let carre (x: float) : float = x*x
+let carre (x: float) : float = x *. x
 let estPair (x: int) : bool = (x mod 2 = 0) (*mod: division euclidienne de deux entiers*)
-let moyenne (x: float) (y: float) : float = (x + y) / 2
+let moyenne (x: float) (y: float) : float = (x +. y) /. 2.0
 let mesage : unit = Printf.printf "un message très utile \n%!"
 ;;
 ```
@@ -126,11 +86,70 @@ appeler une fonction revient a utiliser une fonction prédéfinie, avec des vari
 exemples :
 
 ```ocaml
-carre 5             (* renvoie 25 *)
-estPair (-3)        (* renvoie false, nombre négatifs doivent être entre parenthèses *)
+carre 5.0           (* renvoie 25 *)
 moyenne 12.5 16.5   (* renvoie 14.5 *)
-moyenne (12.5 16.5) (* erreur, car la fonction voit le groupe de parenthèses comme un seul argument, donc il manque un argument *).
 message             (* renvoie rien, affiche "un message très utile" dans la console *)
+```
+
+### le double point-virgule (`;;`)
+
+le `;;` doit être utilisé après la dernière affectation. Il n'y a pas besoin de le mettre après chaque fin de ligne.
+
+exemple :
+
+```ocaml
+(* Version moche *)
+let x : float = 12.0;;
+let y = carre x;;
+let z = estPair y;;
+Printf.printf "Fin des affectations.\n%!";;
+
+(* Version propre *)
+let x : float = 12.0
+let y = carre x
+let z = estPair y
+;;
+Printf.printf "Fin des affectations.\n%!"
+```
+
+### le rôle des parenthèses dans les appellations de fonctions
+
+on utilise les parenthèses pour rendre explicite les cas où les variables ou fonctions passé en argument a une autre fonction sont ambigus. exemple :
+
+```ocaml
+moyenne carre -12.0 carre 17.0
+(*
+- -12.0 est vu comme un calcul et non un nombre négatif
+- carre, -12.0, carre et 17.0 sont tous passé comme argument à moyenne, qui n'en demande que 2
+- puisque -12.0 et 17.0 sont passé à moyenne, les deux carre n'ont pas d'arguments.
+*)
+moyenne (carre (-12.0)) (carre 17.0) (* ici, les arguments sont valides *)
+```
+
+remarques :
+- les parenthèses dans `moyenne (4.0) (5.0)` sont redondantes car l'expression n'est pas ambigue.
+- `moyenne (4.0 5.0)` va renvoyer une erreur car `4.0` et `5.0` sont vu comme un seul argument (voir tuples)
+
+
+## Afficher un message dans la console
+
+syntaxe: `Printf.printf "message" (<variable>)`
+
+caractères utiles :
+
+- `\n` revient à la ligne, souvent utilisé en fin de message.
+- `%!` vide le buffer du print. Absolument **toujours** l'utiliser en fin de message. Ne pas le mettre veut dire ne jamais libérer la mémoire utilisé par le printf, donc de plus en plus de mémoire inutilement inutilisé après chaque printf. Non je sais pas pourquoi il faut le préciser.
+
+pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`. Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
+
+`Printf.printf` est de type unit.
+
+exemples :
+
+```ocaml
+Printf.printf "Hello World!"
+Printf.printf "%i\n%!" (12) (* écrit dans le terminal "12" *)
+Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12 et b = false" *)
 ```
 
 
