@@ -2,7 +2,32 @@
 
 ---
 
-## Types de donnés
+## Table des matières
+
+- [Types de données](#types-de-données)
+    * [Types de données](#types-de-données)
+    * [Caster un type dans un autre](#caster-un-type-dans-un-autre)
+    * [Les opérateurs](#les-opérateurs)
+- [Variables et fonctions](#variables-et-fonctions)
+    * [Déclarer une variable](#déclarer-une-variable)
+    * [Déclarer une fonction](#déclarer-une-fonction)
+    * [Appeler une fonction](#appeler-une-fonction)
+    * [Le double point-virgule (`;;`)](#le-double-point-virgule-)
+    * [Le rôle des parenthèses dans les appellations de fonctions](#le-rôle-des-parentheses-dans-les-appellations-de-fonctions)
+- [Afficher un message dans la console](#afficher-un-message-dans-la-console)
+- [Tests et conditions](#tests-et-conditions)
+    * [Tests avec `if`](#tests-avec-if)
+    * [Les match-expressions (ou pattern matching)](#les-match-expressions-ou-pattern-matching)
+- [Composition de fonctions](#composition-de-fonctions)
+    * [Le mot clé `in`](#le-mot-clé-in)
+    * [Le simple point-virgule](#le-simple-point-virgule)
+- [Types customs et tuples](#types-customs-et-tuples)
+    * [Définir un type custom](#définir-un-type-custom)
+    * [Les tuples](#les-tuples)
+
+---
+
+## Types de données
 
 ### Types de données
 
@@ -34,34 +59,34 @@ string_of_float <float> (* transforme un flotant en une chaine de caractère *)
 
 pour les int :
 
-- `+`    (addition)
-- `-`    (soustraction
-- `*`    (multiplication)
-- `/`    (division euclidienne)
-- `mod`  (reste de la division euclidienne)
+- `+` (addition)
+- `-` (soustraction
+- `*` (multiplication)
+- `/` (division euclidienne)
+- `mod` (reste de la division euclidienne)
 
 pour les floats :
 
-- `+.`   (addition)
-- `-.`   (soustraction
-- `*.`   (multiplication)
-- `/.`   (division)
-- `**`   (puissance)
+- `+.` (addition)
+- `-.` (soustraction
+- `*.` (multiplication)
+- `/.` (division)
+- `**` (puissance)
 
 pour les bools :
 
-- `||`   (ou)
-- `&&`   (et)
-- `not`  (inverse la valeur du booléen)
+- `||` (ou)
+- `&&` (et)
+- `not` (inverse la valeur du booléen)
 
 comparaisons :
 
-- `=`	 (est égal à)
-- `<>`	 (est différent à)
-- `>` 	 (suppérieur)
-- `>=`	 (suppérieur ou égal)
-- `<` 	 (inférieur)
-- `<=`	 (inférieur ou égal)
+- `=` (est égal à)
+- `<>` (est différent à)
+- `>` (suppérieur)
+- `>=` (suppérieur ou égal)
+- `<` (inférieur)
+- `<=` (inférieur ou égal)
 - (ces opérateurs renvoient des boolées).
 
 pour les strings : `^` pour concaténer les chaines (les mettre bout à bout).
@@ -90,7 +115,7 @@ syntaxe: `let <nom_de_la_fonction> <arguments> : <type_de_sortie> = <expression>
 
 pour chaque argument, on fait `(<nom_argument>: <type_argument>)`
 
-le type de sortie est le type de la valeur renvoyé.
+le type de sortie est le type de la valeur renvoyée.
 
 exemple :
 
@@ -102,13 +127,13 @@ let mesage : unit = Printf.printf "un message très utile \n%!"
 ;;
 ```
 
-remarque : l'indentation et le retour à la ligne ne sont *techniquement* pas obligatoire mais sont très fortement conseillé pour rendre le programme plus lisible. On peut tout de même s'en passer quand la fonction est très simple (pas plus longue qu'une petite expression).
+remarque : l'indentation et le retour à la ligne ne sont *techniquement* pas obligatoires mais sont très fortement conseillés pour rendre le programme plus lisible. On peut tout de même s'en passer quand la fonction est très simple (pas plus longue qu'une petite expression).
 
 ### Appeler une fonction
 
 syntaxe : `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
 
-appeler une fonction revient a utiliser une fonction prédéfinie, avec des variables donnés en entré.
+appeler une fonction revient à utiliser une fonction prédéfinie, avec des variables donnés en entrée.
 
 exemples :
 
@@ -139,9 +164,9 @@ let z = estPair y
 Printf.printf "Fin des affectations.\n%!"
 ```
 
-### Le rôle des parenthèses dans les appellations de fonctions
+### Le rôle des parenthèses dans les appels de fonctions
 
-on utilise les parenthèses pour rendre explicite les cas où les variables ou fonctions passé en argument a une autre fonction sont ambigus. exemple :
+on utilise les parenthèses pour rendre explicite les cas où les variables ou fonctions passé en argument a une autre fonction sont ambiguës. exemple :
 
 ```ocaml
 moyenne carre -12.0 carre 17.0
@@ -154,7 +179,7 @@ moyenne (carre (-12.0)) (carre 17.0) (* ici, les arguments sont valides *)
 ```
 
 remarques :
-- les parenthèses dans `moyenne (4.0) (5.0)` sont redondantes car l'expression n'est pas ambigue.
+- les parenthèses dans `moyenne (4.0) (5.0)` sont redondantes car l'expression n'est pas ambiguë.
 - `moyenne (4.0 5.0)` va renvoyer une erreur car `4.0` et `5.0` sont vu comme un seul argument (voir tuples)
 
 ---
