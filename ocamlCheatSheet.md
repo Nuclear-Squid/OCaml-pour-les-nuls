@@ -1,8 +1,10 @@
 # OCaml Cheat Sheet
 
+---
+
 ## Types de donnés
 
-### types de données
+### Types de données
 
 `int` (nombre entiers)
 
@@ -19,7 +21,7 @@
 toujours faire très attentions au types utilisé.
 
 
-### caster un type dans un autre
+### Caster un type dans un autre
 
 ```ocaml
 float_of_int <int>      (* renvoie la même valeur mais en `float` *)
@@ -28,7 +30,7 @@ string_of_int <int>     (* transforme un entier en une chaine de caractère *)
 string_of_float <float> (* transforme un flotant en une chaine de caractère *)
 ```
 
-### les opérateurs
+### Les opérateurs
 
 pour les int: `+`; `-`; `*` (multiplication); `/` (division)
 
@@ -40,10 +42,11 @@ comparaisons:  `=` (est égal à); `<>` (est différent à); `>` (suppérieur); 
 
 pour les strings: `^` pour concaténer les chaines (les mettre bout à bout).
 
+---
 
-## variables et fonctions
+## Variables et fonctions
 
-### déclarer une variable
+### Déclarer une variable
 
 syntaxe: `let <nom_de_la_variable> : <type> = <valeur>`
 
@@ -57,7 +60,7 @@ let b : bool = true
 
 remarque: une variable est une fonction sans argument qui renvoie une constante.
 
-### déclarer une fonction
+### Déclarer une fonction
 
 syntaxe: `let <nom_de_la_fonction> <arguments> : <type_de_sortie> = <expression>`
 
@@ -75,7 +78,9 @@ let mesage : unit = Printf.printf "un message très utile \n%!"
 ;;
 ```
 
-### appeler une fonction
+remarque : l'indentation et le retour à la ligne ne sont *techniquement* pas obligatoire mais sont très fortement conseillé pour rendre le programme plus lisible. On peut tout de même s'en passer quand la fonction est très simple (pas plus longue qu'une petite expression).
+
+### Appeler une fonction
 
 syntaxe : `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
 
@@ -91,7 +96,7 @@ moyenne 12.5 16.5   (* renvoie 14.5 *)
 message             (* renvoie rien, affiche "un message très utile" dans la console *)
 ```
 
-### le double point-virgule (`;;`)
+### Le double point-virgule (`;;`)
 
 le `;;` doit être utilisé après la dernière affectation. Il n'y a pas besoin de le mettre après chaque fin de ligne.
 
@@ -112,7 +117,7 @@ let z = estPair y
 Printf.printf "Fin des affectations.\n%!"
 ```
 
-### le rôle des parenthèses dans les appellations de fonctions
+### Le rôle des parenthèses dans les appellations de fonctions
 
 on utilise les parenthèses pour rendre explicite les cas où les variables ou fonctions passé en argument a une autre fonction sont ambigus. exemple :
 
@@ -130,6 +135,7 @@ remarques :
 - les parenthèses dans `moyenne (4.0) (5.0)` sont redondantes car l'expression n'est pas ambigue.
 - `moyenne (4.0 5.0)` va renvoyer une erreur car `4.0` et `5.0` sont vu comme un seul argument (voir tuples)
 
+---
 
 ## Afficher un message dans la console
 
@@ -152,6 +158,7 @@ Printf.printf "%i\n%!" (12) (* écrit dans le terminal "12" *)
 Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12 et b = false" *)
 ```
 
+---
 
 ## Tests et conditions
 
@@ -194,29 +201,32 @@ syntaxe :
 
 ```ocaml
 match <expression> with
-	| <val1> | <val2> | ... | <valn> -> <expression 1>
+	| <val1> | <val2> | ... | <valn> -> <expression n°1>
 	...
-	| <variable>                     -> <dernière expression>
+	| _			                     -> <dernière expression>
 ```
 
 toutes les expressions de sorties doivent renvoyer le même type.
 
-le cas `<variable>` va "récupérer" tous les cas non traité, cette variable peut être utilisé dans l'expression associé.
+le cas `_` va "récupérer" tous les cas non traité opparavent.
 
 exemple, on verifie que le jour donné est possible :
 		
 ```ocaml
 (* une expression qui renvoit "true" si la date est valide et "false" dans le cas contraire *)
-match mois with
+match m with
 	| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 	| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
 	| 2                           -> (1 <= jour) && (jour <= 28)
-	| n                           -> Printf.printf "le mois %i n'existe pas\n%!" (n); false
+	| _                           -> Printf.printf "le mois %i n'existe pas\n%!" (m); false
 ;;
 
 (* voir la section 2 de "compositions de fonctions" pour l'explication du ";" *)
 ```
 
+le pattern matching est une des notions fondamentales de la programation, ce n'es que les bases. Il y aura plus tard une explication plus poussée pour expliquer les cas plus complexes.
+
+---
 
 ## Composition de fonctions
 
@@ -240,6 +250,7 @@ let min4 (a: int) (b: int) (c: int) (d: int) : int =
 	in
 	let m = min2 a b and n = min2 c d in
 	min2 m n
+;;
 ```
 
 ### Le simple point-virgule 
@@ -253,10 +264,11 @@ Printf.printf "le mois %i n'existe pas\n%!" (n); false (* écrit dans le termina
 message; message; moyenne 12 17 (* écrit deux fois de suite "un message très interessant" puis renvoie 14.5 (float) *)
 ```
 
+---
 
-## types customs et tuples
+## Types customs et tuples
 
-### définir un type custom
+### Définir un type custom
 
 définir un type comme un alias d'un autre type peut permettre d'écrire un code plus simple à relire.
 
@@ -268,9 +280,15 @@ syntaxe : `type <nom_du_type> = <constructeur 1> | <constructeur 2> | ... | <con
 
 remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
 
-exemple : (voir catégorie tupules)
+exemples :
 
-### les tuples
+```ocaml
+type batterie = float
+type etat_machine = On | Off | Standby
+;;
+```
+
+### Les tuples
 
 on peut définir ce qu'on appelle un `tuple`, ce qui est une sorte de liste python mais qu'on ne peut pas modifier.
 
@@ -308,13 +326,13 @@ let horaire_suivant (h, m, s, mer: horaire) : horaire =
 ;;
 ```
 
-remarque : il est impossible de directement afficher la valeur d'un `tuple` ou d'un type énuméré dans le terminal. Il faut soit même créer une fonction pour transformer son `tuple` / `enum` en un `string`
+remarque : il est impossible de directement afficher la valeur d'un `tuple` ou d'un type énuméré dans le terminal. Il faut soit même créer une fonction pour caster son `tuple` / `enum` en un `string`
 
 exemple :
 
 ```ocaml
 let string_of_horaire (h, m, s, mer: horaire) : string =
-	(* les matchs expressions sont parfait pour caster des enums *)
+	(* les matchs expressions sont parfaites pour caster des enums *)
 	let string_of_mer (m: meridien) =
 		match m with
 			| Am -> "Am"
