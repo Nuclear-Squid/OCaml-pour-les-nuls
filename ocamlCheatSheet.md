@@ -32,15 +32,39 @@ string_of_float <float> (* transforme un flotant en une chaine de caractère *)
 
 ### Les opérateurs
 
-pour les int: `+`; `-`; `*` (multiplication); `/` (division)
+pour les int :
 
-pour les floats: parreil que pour les ints, mais suivis d'un point (ex: `+.`)
+- `+`    (addition)
+- `-`    (soustraction
+- `*`    (multiplication)
+- `/`    (division euclidienne)
+- `mod`  (reste de la division euclidienne)
 
-pour les bools: `||` (ou); `&&` (et); `not` (inverse la valeur du booléen)
+pour les floats :
 
-comparaisons:  `=` (est égal à); `<>` (est différent à); `>` (suppérieur); `>=` (suppérieur ou égal); `<` (inférieur) `<=` (inférieur ou égal) (ces opérateurs renvoient des boolées).
+- `+.`   (addition)
+- `-.`   (soustraction
+- `*.`   (multiplication)
+- `/.`   (division)
+- `**`   (puissance)
 
-pour les strings: `^` pour concaténer les chaines (les mettre bout à bout).
+pour les bools :
+
+- `||`   (ou)
+- `&&`   (et)
+- `not`  (inverse la valeur du booléen)
+
+comparaisons :
+
+- `=`	 (est égal à)
+- `<>`	 (est différent à)
+- `>` 	 (suppérieur)
+- `>=`	 (suppérieur ou égal)
+- `<` 	 (inférieur)
+- `<=`	 (inférieur ou égal)
+- (ces opérateurs renvoient des boolées).
+
+pour les strings : `^` pour concaténer les chaines (les mettre bout à bout).
 
 ---
 
@@ -72,7 +96,7 @@ exemple :
 
 ```ocaml
 let carre (x: float) : float = x *. x
-let estPair (x: int) : bool = (x mod 2 = 0) (*mod: division euclidienne de deux entiers*)
+let estPair (x: int) : bool = (x mod 2 = 0) (*mod : reste de la division euclidienne de deux entiers*)
 let moyenne (x: float) (y: float) : float = (x +. y) /. 2.0
 let mesage : unit = Printf.printf "un message très utile \n%!"
 ;;
@@ -85,8 +109,6 @@ remarque : l'indentation et le retour à la ligne ne sont *techniquement* pas 
 syntaxe : `<nom_de_la_fonction> <argument1> <argument2> ... <argumentn>`
 
 appeler une fonction revient a utiliser une fonction prédéfinie, avec des variables donnés en entré.
-
-**ATTENTION** ne pas mettre de parenthèses au tour des arguments, comme en python.
 
 exemples :
 
@@ -224,7 +246,7 @@ match m with
 (* voir la section 2 de "compositions de fonctions" pour l'explication du ";" *)
 ```
 
-le pattern matching est une des notions fondamentales de la programation, ce n'es que les bases. Il y aura plus tard une explication plus poussée pour expliquer les cas plus complexes.
+le pattern matching est une des notions fondamentales de la programation fonctionnelle, ce n'es que les bases. Il y aura plus tard une explication plus poussée pour expliquer les cas plus complexes.
 
 ---
 
