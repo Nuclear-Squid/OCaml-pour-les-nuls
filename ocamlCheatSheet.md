@@ -388,3 +388,41 @@ let string_of_horaire (h, m, s, mer: horaire) : string =
 	string_of_int h ^ ":" ^ string_of_int m ^ ":" ^ string_of_int s ^ ":" ^ string_of_mer mer
 ;;
 ```
+
+---
+
+## Fonctions récursives
+
+Une fonction récursive est une fonction qui s'appelle elle même. La notion est très simple en théorie mais prend du temps à comprendre et à réussir à mettre en œuvre.
+
+syntaxe : `let rec <fonction> = <expression>`
+
+Remarques:
+
+- Il faut que l'expression appelle à un moment la fonction qu'on définie.
+- Une fonction récursive doit toujours au moins une façon de s'arrêter.
+
+exemples :
+
+```ocaml
+(* Calcule le produit factoriel d'un nombre *)
+let rec fact (n: int): int =
+	match n > 1 with
+		| true  -> n * fact(n - 1)
+		| false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
+;;
+
+(*
+Décomposition du fonctionnement de la fonction avec `fact 5`:
+fact 5 = 5 * fact 4
+	-> fact 4 = 4 * fact 3
+		-> fact 3 = 3 * fact 2
+			-> fact 2 = 2 * fact 1
+				-> fact 1 = 1
+				=> fact 1 = 1
+			=> fact 2 = 2 * 1 = 2
+		=> fact 3 = 3 * 2 = 6
+	=> fact 4 = 4 * 6 = 24
+=> fact 5 = 5 * 24 = 120
+*)
+```
