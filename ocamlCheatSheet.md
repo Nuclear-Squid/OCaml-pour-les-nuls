@@ -4,6 +4,9 @@
 
 ## Table des matières
 
+- [Sémantique et Spécification](#semantique-et-specification)
+    * [Spécification](#specification)
+    * [Réalisation](#realisation)
 - [Types de données](#types-de-données)
     * [Types de données](#types-de-données)
     * [Caster un type dans un autre](#caster-un-type-dans-un-autre)
@@ -26,6 +29,58 @@
     * [Les tuples](#les-tuples)
 
 ---
+
+## Sémantique et Spécification
+
+### Spécification
+-------------------------------
+SPECIFICATION : "Une phrase courte pour décrire le programme en français"
+  
+PROFIL : nom_de_la_func : Type_d'entrée1 -> Type_d'entrée2 ->... -> Type_de_sortie
+  
+SEMANTIQUE : "(nom_de_la_func argument1 argument2 ..) explication de que fait la function"*
+  
+EXEMPLES ET PROP : (1) (nom_de_la_func argument1 argument2...) = resultat 
+                   (2) (nom_de_la_func argument1 argument2...) = resultat 
+
+-------------------------------
+EXEMPLE AVEC UNE VRAI FUNCTION : 
+
+SPECIFICATION : "Distance a l'origine d'un point"
+
+Profil : distO : R -> R -> R+
+
+SEMANTIQUE : (distO x y) calcul et renvoie la distance a l'origine du point de coordonnées (x,y)
+
+EXEMPLES : (1) (distO 0 0) = 0
+           (2) (distO 1 0) = 1
+
+### Réalisation
+--------------------------
+REALISATION : "nom en entier"
+
+ALGORITHME : Etape1 (en français)
+             Etape2
+             Etape3
+             Etape4
+  
+TESTS : comme les exemples de la spécification
+ 
+IMPLANTATION : LE CODE ENFIN !
+
+-------------------------------
+EXEMPLE AVEC UNE VRAI FUNCTION : 
+
+REALISATION : "Distance a l'origine d'un point"
+
+ALGORITHME : Calcul avec la formule : sqrt(x*2 + y*2)
+
+TESTS : (1) (distO 0 0) = 0
+        (2) (distO 1 0) = 1
+	
+IMPLANTATION :
+
+`let distO (x:int) (y:int) : int = sqrt(x*2 + y*2);;`
 
 ## Types de données
 
