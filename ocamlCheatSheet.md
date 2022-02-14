@@ -82,6 +82,9 @@ pour les bools :
 
 comparaisons :
 
+Dans Ocaml les comparateurs suivants sont dits "surchargés" cela veut dire qu'ils peuvent comparer plusieurs types,
+a la seule conditions que les deux opérandes aient le même type.
+
 - `=` (est égal à)
 - `<>` (est différent à)
 - `>` (suppérieur)
@@ -292,7 +295,6 @@ else
 ;;
 ```
 
-
 ### Les match-expressions (ou pattern matching)
 
 syntaxe :
@@ -382,6 +384,7 @@ exemples :
 
 ```ocaml
 type batterie = float
+type reels = I of int | F of float
 type etat_machine = On | Off | Standby
 ;;
 ```
