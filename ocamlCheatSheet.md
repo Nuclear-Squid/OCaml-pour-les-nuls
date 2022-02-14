@@ -3,9 +3,6 @@
 ---
 ## Table des matières
 
-- [Sémantique et Spécification](#semantique-et-specification)
-    * [Spécification](#specification)
-    * [Réalisation](#realisation)
 - [Types de données](#types-de-données)
     * [Types de données](#types-de-données)
     * [Caster un type dans un autre](#caster-un-type-dans-un-autre)
@@ -15,7 +12,8 @@
     * [Déclarer une fonction](#déclarer-une-fonction)
     * [Appeler une fonction](#appeler-une-fonction)
     * [Le double point-virgule (`;;`)](#le-double-point-virgule-)
-    * [Le rôle des parenthèses dans les appellations de fonctions](#le-rôle-des-parentheses-dans-les-appellations-de-fonctions)
+    * [Le rôle des parenthèses dans les appels de fonctions](#le-rôle-des-parenthèses-dans-les-appels-de-fonctions)
+	* [Sémantique de fonctions](#sémantique-de-fonctions)
 - [Afficher un message dans la console](#afficher-un-message-dans-la-console)
 - [Tests et conditions](#tests-et-conditions)
     * [Tests avec `if`](#tests-avec-if)
@@ -29,59 +27,6 @@
 
 ---
 
-## Sémantique et Spécification
-
-### Spécification
--------------------------------
-SPECIFICATION : "Une phrase courte pour décrire le programme en français"
-
-PROFIL : nom_de_la_func : Type_d'entrée1 -> Type_d'entrée2 ->... -> Type_de_sortie
-
-SEMANTIQUE : "(nom_de_la_func argument1 argument2 ..) explication de que fait la function"*
-
-EXEMPLES ET PROP : (1) (nom_de_la_func argument1 argument2...) = resultat 
-                   (2) (nom_de_la_func argument1 argument2...) = resultat 
-
--------------------------------
-EXEMPLE AVEC UNE VRAI FUNCTION : 
-
-SPECIFICATION : "Distance a l'origine d'un point"
-
-Profil : distO : R -> R -> R+
-
-SEMANTIQUE : (distO x y) calcul et renvoie la distance a l'origine du point de coordonnées (x,y)
-
-EXEMPLES : (1) (distO 0 0) = 0
-           (2) (distO 1 0) = 1
-
-### Réalisation
---------------------------
-REALISATION : "nom en entier"
-
-ALGORITHME : Etape1 (en français)
-             Etape2
-             Etape3
-             Etape4
-
-TESTS : comme les exemples de la spécification
-
-IMPLANTATION : LE CODE ENFIN !
-
--------------------------------
-EXEMPLE AVEC UNE VRAI FUNCTION : 
-
-REALISATION : "Distance a l'origine d'un point"
-
-ALGORITHME : Calcul avec la formule : sqrt(x*2 + y*2)
-
-TESTS : (1) (distO 0 0) = 0
-        (2) (distO 1 0) = 1
-
-IMPLANTATION :
-
-`let distO (x:int) (y:int) : int = sqrt(x*2 + y*2);;`
-
------------
 
 ## Types de données
 
@@ -238,6 +183,56 @@ remarques :
 - les parenthèses dans `moyenne (4.0) (5.0)` sont redondantes car l'expression n'est pas ambiguë.
 - `moyenne (4.0 5.0)` va renvoyer une erreur car `4.0` et `5.0` sont vu comme un seul argument (voir tuples)
 
+
+### Sémantique de fonctions
+
+La sémantique sont les énormes commentaires qui expliquent comment une fonction fonctionne. Dans la vrai vie on fait pas ça mais puisque c'est demandé dans les comptes rendus on explique comment ça marche ici.
+
+La spécification explique ce que fait la fonction d'un point de vue très général, tandis que la réalisation s'attarde sur le détail du fonctionnement de la fonction.
+
+syntaxe :
+
+```ocaml
+(*
+    | SPÉCIFICATION
+    | <nom_de_la_fonction> : <explicaton du rôle de la fonction>
+    | - Profil : <nom_de_la_fonction> : <type_arg_1> -> <type_arg_2> -> ... -> <type_sortie>
+    | - Sémantique : <nom_de_la_fonction> <nom_arg_1> <nom_arg_2> <explication de ce que fait la fonction>
+    | - Exemple et propriétés :
+    |   (a) <appel_fonction> = <sortie>
+    |   (b) <propriété plus ou moins intéressante de la fonction>
+    |
+    | RÉALISATION
+    | - Algorithme : Etape 1 (en français)
+    |                Etape 2
+    |                ...
+    |                Etape n
+    | - Implémentation :
+*)
+<le_reste_du_code> (*enfin*)
+
+```
+
+exemple :
+```ocaml
+(*
+    | SPÉCIFICATION
+    | dist : Distance à l'origine d'un point
+    | - Profil : dist : R -> R -> R+
+    | - Sémantique : dist x y renvoie la distance à l'origine du point de coordonnés (x, y)
+    | - Exemple et propriétés :
+    |   (a) dist 0 1 = 1
+    |   (b) dist 3 4 = 5
+    |   (c) dist x y >= 0 pour tout x, y réel
+    |
+    | RÉALISATION
+    | - Algorithme : On applique le théorème de pythagore
+    | - Implémentation :
+*)
+let dist (x: float) (y: float) : float = sqrt(x*x + y*y)
+;;
+
+```
 ---
 
 ## Afficher un message dans la console
@@ -319,7 +314,7 @@ exemple, on verifie que le jour donné est possible :
 (* une expression qui renvoit "true" si la date est valide et "false" dans le cas contraire *)
 match m with
 	| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
-	| 4 | 6 | 9 | 11			  -> (1 <= jour) && (jour <= 30)
+	| 4 | 6 | 9 | 11              -> (1 <= jour) && (jour <= 30)
 	| 2                           -> (1 <= jour) && (jour <= 28)
 	| _                           -> Printf.printf "le mois %i n'existe pas\n%!" (m); false
 ;;
@@ -379,7 +374,7 @@ syntaxe : `type <nom_du_type> = <type>`
 
 on peut aussi définir des types "énumérés". Les variables de ce type ne peuvent seulement valloir une des valeurs décrites:
 
-syntaxe : `type <nom_du_type> = <constructeur 1> | <constructeur 2> | ... | <constructeur n>`
+syntaxe : `type <nom_du_type> = <constructeur_1> | <constructeur_2> | ... | <constructeur_n>`
 
 remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
 
