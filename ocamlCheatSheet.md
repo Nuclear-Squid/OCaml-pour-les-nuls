@@ -24,7 +24,6 @@
 - [Types customs et tuples](#types-customs-et-tuples)
     * [Définir un type custom](#définir-un-type-custom)
     * [Les tuples](#les-tuples)
-
 ---
 
 
@@ -311,7 +310,7 @@ le cas `_` va "récupérer" tous les cas non traité opparavent.
 exemple, on verifie que le jour donné est possible :
 		
 ```ocaml
-(* une expression qui renvoit "true" si la date est valide et "false" dans le cas contraire *)
+(* expression qui renvoit true si la date est valide et false dans le cas contraire *)
 match m with
 	| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 	| 4 | 6 | 9 | 11              -> (1 <= jour) && (jour <= 30)
@@ -320,6 +319,17 @@ match m with
 ;;
 
 (* voir la section 2 de "compositions de fonctions" pour l'explication du ";" *)
+```
+
+on peut aussi "matcher" plusieurs variables en même temps.
+
+```ocaml
+(* expression qui compte le nombre de 42 dans le tuple (x, y): int*int *)
+match x, y with
+	| (42, 42)          -> 2
+	| (_, 42) | (42, _) -> 1
+	| (_, _)		    -> 0
+;;
 ```
 
 le pattern matching est une des notions fondamentales de la programation fonctionnelle, ce n'es que les bases. Il y aura plus tard une explication plus poussée pour expliquer les cas plus complexes.
@@ -385,6 +395,24 @@ type batterie = float
 type etat_machine = On | Off | Standby
 ;;
 ```
+
+Les match-expressions sont aussi très efficaces avec les énums, exemple :
+
+```ocaml
+type langages = Python | C | Cpp | Bash | Java | JavaScript | Haskel | Perl | Ocaml | Elm
+type tiers = S | A | B | C | F | Ocaml
+let tier_list_langages (l: langages): tiers =
+	match l with
+		| Bash | Elm          -> S
+		| Python | JavaScript -> A
+		| Cpp | Haskel        -> B
+		| C | Java            -> C
+		| Perl                -> F
+		| Ocaml               -> Ocaml
+;;
+```
+
+On remarque qu'on a pas besoin du `_` car la match-expression est exaustive (on a traité toutes les valeurs possibles de l'énum "langages")
 
 ### Les tuples
 
