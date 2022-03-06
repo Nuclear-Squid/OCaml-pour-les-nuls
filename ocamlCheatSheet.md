@@ -21,27 +21,26 @@
 - [Composition de fonctions](#composition-de-fonctions)
     * [Le mot clé `in`](#le-mot-clé-in)
     * [Le simple point-virgule](#le-simple-point-virgule)
-- [Types customs et tuples](#types-customs-et-tuples)
-    * [Définir un type custom](#définir-un-type-custom)
-    * [Les tuples](#les-tuples)
+- [Types customs et structures de donnés avancés](#types-customs-et-structures-de-donnes-avances)
+    * [Les types synonymes](#les-types-synonymes)
+    * [Les tuples (ou types produits)](#les-tuples-ou-types-produits)
+    * [Les énumérés (ou types sommes)](#les-enumeres-ou-types-sommes)
+    * [Associer une valeur a un constructeur](#associer-une-valeur-a-un-constructeur)
+    * [Les inférences de types (ou polymorphie)](#les-inferences-de-types-ou-polymorphie)
+    * [Les types récursifs](#les-types-recursifs)
+- [Fonctions récursives](#fonctions-recursives)
 ---
-
 
 ## Types de données
 
 ### Types de données
 
-`int` (nombre entiers)
-
-`float` (nombre à virgule)
-
-`bool` (true / false)
-
-`char` (un seul caractère: 'a')
-
-`str` (une chaîne de caractères: "AAAAAA")
-
-`unit` (ne renvoie rien)
+- `int` (nombre entiers)
+- `float` (nombre à virgule)
+- `bool` (true / false)
+- `char` (un seul caractère: 'a')
+- `string` (une chaîne de caractères: "AAAAAA")
+- `unit` (ne renvoie rien)
 
 toujours faire très attentions au types utilisé.
 
@@ -107,7 +106,7 @@ let b : bool = true
 ;;
 ```
 
-remarque: une variable est une fonction sans argument qui renvoie une constante.
+remarque: une variable est une fonction sans argument qui renvoie une constante, c'est pour ça qu'on ne peut pas modifier la valeur d'une variable en OCaml.
 
 ### Déclarer une fonction
 
@@ -120,10 +119,10 @@ le type de sortie est le type de la valeur renvoyée.
 exemple :
 
 ```ocaml
-let carre (x: float) : float = x *. x
-let estPair (x: int) : bool = (x mod 2 = 0) (*mod : reste de la division euclidienne de deux entiers*)
-let moyenne (x: float) (y: float) : float = (x +. y) /. 2.0
-let mesage : unit = Printf.printf "un message très utile \n%!"
+let carre (x: float): float = x *. x
+let estPair (x: int): bool = (x mod 2 = 0) (*mod : reste de la division euclidienne de deux entiers*)
+let moyenne (x: float) (y: float): float = (x +. y) /. 2.0
+let mesage: unit = Printf.printf "un message très utile \n%!"
 ;;
 ```
 
@@ -173,7 +172,7 @@ moyenne carre -12.0 carre 17.0
 (*
 - -12.0 est vu comme un calcul et non un nombre négatif
 - carre, -12.0, carre et 17.0 sont tous passé comme argument à moyenne, qui n'en demande que 2
-- puisque -12.0 et 17.0 sont passé à moyenne, les deux carre n'ont pas d'arguments.
+- puisque -12.0 et 17.0 sont passé à moyenne, les deux `carre` n'ont pas d'arguments.
 *)
 moyenne (carre (-12.0)) (carre 17.0) (* ici, les arguments sont valides *)
 ```
@@ -185,9 +184,7 @@ remarques :
 
 ### Sémantique de fonctions
 
-La sémantique sont les énormes commentaires qui expliquent comment une fonction fonctionne. Dans la vrai vie on fait pas ça mais puisque c'est demandé dans les comptes rendus on explique comment ça marche ici.
-
-La spécification explique ce que fait la fonction d'un point de vue très général, tandis que la réalisation s'attarde sur le détail du fonctionnement de la fonction.
+Les sémantiques sont les énormes commentaires qui expliquent comment une fonction fonctionne. Dans la vrai vie on fait pas ça mais puisque c'est demandé dans les compte-rendus on explique comment ça marche ici. La spécification explique ce que fait la fonction d'un point de vue très général, tandis que la réalisation s'attarde sur le détail du fonctionnement de la fonction.
 
 syntaxe :
 
@@ -230,29 +227,28 @@ exemple :
 *)
 let dist (x: float) (y: float) : float = sqrt(x*x + y*y)
 ;;
-
 ```
 ---
 
 ## Afficher un message dans la console
 
-syntaxe: `Printf.printf "message" (<variable>)`
+syntaxe: `Printf.printf "message" <val1> ... <valn>`
 
-caractères utiles :
+Caractères utiles :
 
 - `\n` revient à la ligne, souvent utilisé en fin de message.
 - `%!` vide le buffer du print. Absolument **toujours** l'utiliser en fin de message. Ne pas le mettre veut dire ne jamais libérer la mémoire utilisé par le printf, donc de plus en plus de mémoire inutilement inutilisé après chaque printf. Non je sais pas pourquoi il faut le préciser.
 
-pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`. Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
+Pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`, si vous chercher à afficher le contenu d'un tuple ou d'un énum, allez voir la section "Caster des tuples et enmums" du chapitre "Types customs et structures de donnés avancés". Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
 
 `Printf.printf` est de type unit.
 
 exemples :
 
 ```ocaml
-Printf.printf "Hello World!"
-Printf.printf "%i\n%!" (12) (* écrit dans le terminal "12" *)
-Printf.printf "x = %f et b = %b\n%!" (x b) (* écrit dans le terminal "x = 42.12 et b = false" *)
+Printf.printf "Hello World!\n%!"
+Printf.printf "x = %f et b = %b\n%!" x b (* écrit dans le terminal "x = 42.12 et b = false" *)
+Printf.printf "x = %f => x^2 = %f\n%!" x (carre x) (* écrit "x = -5.0 => x^2 = 25.0" *)
 ```
 
 ---
@@ -280,8 +276,7 @@ un if qui renvoie `true` ou `false` est (en général) inutile.
 exemples :
 
 ```ocaml
-(* un if en une ligne, sans else *)
-if estPair a then a + 1
+if estPair a then a + 1 else a
 
 (* un bloc if-else *)
 if x >= 5 then 
@@ -298,9 +293,9 @@ syntaxe :
 
 ```ocaml
 match <expression> with
-	| <val1> | <val2> | ... | <valn> -> <expression n°1>
-	...
-	| _			                     -> <dernière expression>
+| <val1> | <val2> | ... | <valn> -> <expression n°1>
+...
+| _			                     -> <dernière expression>
 ```
 
 toutes les expressions de sorties doivent renvoyer le même type.
@@ -312,10 +307,10 @@ exemple, on verifie que le jour donné est possible :
 ```ocaml
 (* expression qui renvoit true si la date est valide et false dans le cas contraire *)
 match m with
-	| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
-	| 4 | 6 | 9 | 11              -> (1 <= jour) && (jour <= 30)
-	| 2                           -> (1 <= jour) && (jour <= 28)
-	| _                           -> Printf.printf "le mois %i n'existe pas\n%!" (m); false
+| 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
+| 4 | 6 | 9 | 11              -> (1 <= jour) && (jour <= 30)
+| 2                           -> (1 <= jour) && (jour <= 28)
+| _                           -> Printf.printf "le mois %i n'existe pas\n%!" (m); false
 ;;
 
 (* voir la section 2 de "compositions de fonctions" pour l'explication du ";" *)
@@ -326,9 +321,9 @@ on peut aussi "matcher" plusieurs variables en même temps.
 ```ocaml
 (* expression qui compte le nombre de 42 dans le tuple (x, y): int*int *)
 match x, y with
-	| (42, 42)          -> 2
-	| (_, 42) | (42, _) -> 1
-	| (_, _)		    -> 0
+| (42, 42)          -> 2
+| (_, 42) | (42, _) -> 1
+| (_, _)		    -> 0
 ;;
 ```
 
@@ -338,11 +333,11 @@ le pattern matching est une des notions fondamentales de la programation fonctio
 
 ## Composition de fonctions
 
-### Le mot clé `in`
+### Les mot clé `in` et `and`
 
 syntaxe: `let <var/func> = <expression> and <var/func> = <expression> and ... in <expression>`
 
-permet de faire de la composition de fonction (comme f•g en maths).
+permet de faire de la composition de fonction (comme f•g en maths). C'est LA notion fondamentale en programmation fonctionnelle.
 
 exemples :
 
@@ -367,56 +362,40 @@ le `;` permet d'enchainer des expressions sans rien passer à l'expression suiva
 
 exemples :
 
+- afficher un message dans la console au mileu d'une expression :
+
 ```ocaml
 Printf.printf "le mois %i n'existe pas\n%!" (n); false (* écrit dans le terminal "le mois <n> n'existe pas" et renvoie "false" *)
-message; message; moyenne 12 17 (* écrit deux fois de suite "un message très interessant" puis renvoie 14.5 (float) *)
+```
+
+- tester une fonction :
+
+```ocaml
+Printf.printf "le max de %i et %i est %i.\n%!" 12 27 (max2 12 27);
+Printf.printf "le max de %i et %i est %i.\n%!" 32 27 (max2 32 27)
 ```
 
 ---
 
-## Types customs et tuples
+## Types customs et structures de donnés avancés
 
-### Définir un type custom
+### Les types synonymes
 
-définir un type comme un alias d'un autre type peut permettre d'écrire un code plus simple à relire.
+Définir un type comme un alias d'un autre peut parraître inutile, mais cela permet d'écrire du code plus propre et simple à relire.
 
 syntaxe : `type <nom_du_type> = <type>`
 
-on peut aussi définir des types "énumérés". Les variables de ce type ne peuvent seulement valloir une des valeurs décrites:
-
-syntaxe : `type <nom_du_type> = <constructeur_1> | <constructeur_2> | ... | <constructeur_n>`
-
-remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
-
-exemples :
+exemple :
 
 ```ocaml
-type batterie = float
-type etat_machine = On | Off | Standby
+type vitesse = float
+type couleur = string
 ;;
 ```
 
-Les match-expressions sont aussi très efficaces avec les énums, exemple :
+### Les tuples (ou types produits)
 
-```ocaml
-type langages = Python | C | Cpp | Bash | Java | JavaScript | Haskel | Perl | Ocaml | Elm
-type tiers = S | A | B | C | F | Ocaml
-let tier_list_langages (l: langages): tiers =
-	match l with
-		| Bash | Elm          -> S
-		| Python | JavaScript -> A
-		| Cpp | Haskel        -> B
-		| C | Java            -> C
-		| Perl                -> F
-		| Ocaml               -> Ocaml
-;;
-```
-
-On remarque qu'on a pas besoin du `_` car la match-expression est exaustive (on a traité toutes les valeurs possibles de l'énum "langages")
-
-### Les tuples
-
-on peut définir ce qu'on appelle un `tuple`, ce qui est une sorte de liste python mais qu'on ne peut pas modifier.
+On peut définir ce qu'on appelle un `tuple`, ce qui est une sorte de liste python mais qu'on ne peut pas modifier.
 
 syntaxe : `let <nom_du_tuple> = (<var1>, <var2, ... <varn>: <type1> * <type2> * ... * <typen>)`
 
@@ -427,46 +406,186 @@ il est possible (et conseillé) de séparer la définition des type d'un tuple d
 exemple de types customs et tuples dans un petit programme :
 
 ```ocaml
-(* calcule l'heure une seconde après l'heure actuelle *)
+type position = int*int
+type vecteur = int*int
 
-type seconde = int
-type minute = int
-type heure = int
-type meridien = Am | Pm
-type horaire = heure * minute * seconde * meridien
-
-let horaire_suivant (h, m, s, mer: horaire) : horaire = 
-	if s = 59 then
-		if m = 59 then
-			if h = 11 then
-				if mer = Am then
-					(0, 0, 0, Pm)
-				else
-					(0, 0, 0, Am)
-			else
-				(h+1, 0, 0, mer)
-		else
-			(h, m+1, 0, mer)
-	else
-		(h, m, s+1, mer)
+(* Déplace un objet le long d'un vecteur donné *)
+let deplace ((x, y): position) ((i, j): vecteur): position = ((x + i), (y + j))
 ;;
 ```
 
-remarque : il est impossible de directement afficher la valeur d'un `tuple` ou d'un type énuméré dans le terminal. Il faut soit même créer une fonction pour caster son `tuple` / `enum` en un `string`
+Remarques :
+
+- On peut aussi écrire un tuple sous la forme `<var>` plutot que `(<elem_1>, ... , <elem_n>)` quand on veut juste transmettre le tuple sans y apporter de changements.
+- Il est impossible d'afficher directement le contenu d'un tuple dans un print, il faut soit même créer une fonction qui permet de caster son tuple dans une chaine de caractère. Exemple :
+
+```ocaml
+let string_of_position ((x, y): position): string =
+	"(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ")"
+
+(* string_of_position (12, 5) => "(12, 5)" *)
+```
+
+### Les énumérés (ou types sommes)
+
+Les variables de type dit "énumérés" sont des variables dont la valeur ne peut valloir que certaines valeurs décrites par des constructeurs.
+
+syntaxe : `type <nom_du_type> = <constructeur1> | <constructeur2> | ... | <constructeurn>`
+
+remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
+
+exemples :
+
+```ocaml
+type etat_machine = On | Off | Standby
+;;
+```
+
+Comme pour les tuples, il est impossible d'afficher directement un constructeur dans le terminal avec un print, il faut passer par une fonction intermédiaire. En règle générale, les match-expressions sont très efficaces pour traiter les énums, exemple :
+
+```ocaml
+type langages =
+	| Python | C | Cpp | Bash | Java | Perl
+	| JavaScript | Haskel | Ocaml | Elm | Fsharp
+
+let tier_list_langages (l: langages): tiers = match l with
+    | Bash | Elm          -> "S"
+    | Python | JavaScript -> "A"
+    | C | Haskel | Fsharp -> "B"
+    | Cpp | Java          -> "C"
+    | Perl                -> "F"
+    | Ocaml               -> "Ocaml"
+;;
+```
+
+On remarque qu'on a pas besoin du `_` car la match-expression est exaustive (on a traité toutes les valeurs possibles de l'énum "langages")
+
+### Associer une valeur a un constructeur
+
+On peut aussi associer une valeur a un constructeur pour créer des types de façon dynamiques, ce qui permet d'avoir un type qui contient une valeur de plusieurs types différents, ou un type qui contient des valeurs ou des constructeurs (en général on utilise le deuxième car le premier est très lourd et on peut le faire de façon beaucoup plus propre. Voir inférence de types).
+
+syntaxe : `type <nom_du_type> = <constructeur_1> of <type_1> | ... | <constructeur_n> of <type_n>`
+
+On peut "déconstruire" ces types avec des match-expressions, ce qui permet de récupérer la valeur d'un constructeur dynamique.
 
 exemple :
 
 ```ocaml
-let string_of_horaire (h, m, s, mer: horaire) : string =
-	(* les matchs expressions sont parfaites pour caster des enums *)
-	let string_of_mer (m: meridien) =
-		match m with
-			| Am -> "Am"
-			| Pm -> "Pm"
-	in
-	string_of_int h ^ ":" ^ string_of_int m ^ ":" ^ string_of_int s ^ ":" ^ string_of_mer mer
+(* Position d'une pièce sur un jeu d'échec. None si elle sort du terrain *)
+type position = None | Coord of (int*int)
+
+(* Avance un pion d'une case si il le peut, renvoie None sinon *)
+let avance_pion ((x, y): int*int): position =
+    if y >= 8 then None else Coord(x, y + 1)
+
+(* Caste un type int*int en type string *)
+let string_of_coord ((x, y): int*int): string =
+    "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ")"
+
+(* Caste un type position en type string *)
+let string_of_position (coord: position): string = match coord with
+    | None     -> "None"
+    | Coord(c) -> string_of_coord c
+;;
+
+Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 5)));
+(* Écrit dans la console : "La position du pion est (4, 6)." *)
+
+Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 9)))
+(* Écrit dans la console : "La position du pion est None." *)
+```
+
+### Les types options
+
+Les types options sont des types de donnés assez particuliers car ils permettent de renvoyer soit une valeur (d'un type donné), soit rien du tout. L'expression associée à la fonction doit pouvoir renvoyer au moins deux valeurs (à l'aide d'un `if` par exemple), `None` et `Some <var>` respectivement. On peut bien sûr avoir plusieurs `None` ou `Some <var>` dans la fonction. La différence avec un énum dynamique est qu'on a pas un type avec un ou plusieures constructeurs, on a un type synonyme classique mais la fonction précédente peut n'avoir rien renvoyé. Un enum a toujours une valeur.
+
+syntaxe : `let <fonction> <args> = <expression>`
+
+Pour utiliser les valeurs généré par une fonction utilisant un type option il faudra d'abord passer par une fonction intermédiaire pour traiter séparément le cas `None` du cas `Some <var>`. La valeur passé à cette fonction intermédiaire doit être de type `<type> option`.
+
+exemple : On a un a un damier et on cherche la case au milieu de deux autres cases allignés.
+
+```ocaml
+let case = int * int
+
+let milieu_cases ((i, j): case) ((x, y): case) =
+    let milieu_existe ((i, j): case) ((x, y): case): bool =
+		((x-i) mod 2 = 0) && ((y-j) mod 2 = 0)
+    in
+    else if not (milieu_existe(i, j) (x, y)) then None
+    else Some ((i + x) / 2, (j + y) / 2)
+
+let str_of_case ((i, j): case): string =
+    "(" ^ (string_of_int i) ^ ", " ^ (string_of_int j) ^ ")"
+
+let str_of_case_option (c: case option): string =
+    match c with
+    | None   -> "None"
+    | Some c -> str_of_case c
 ;;
 ```
+
+### Les inférences de types (ou polymorphie)
+
+Quand une fonction ou un constructeur d'un énum peut utiliser plusieurs types différents, on peut utiliser ce qu'on appelle de l'inférence de type. Concrètement, on défini un type générique dans la définition d'une fonction ou d'un autre type et le programme va récupérer le type des valeurs passé en arguments et associer ça au type générique. Il faut écrire le nom de ce type générique de la façon suivante : `'<nom_du_type_générique>`
+
+Syntaxe (passer un type générique en argument à un énum) : `type '<arg> <enum> = <constructeur> of '<arg>`
+
+Exemple, faire un arbre de décision à l'aide d'un énum d'énum :
+
+```ocaml
+(* Programme qui permet de se connecter à un réseau wifi *)
+type ('a, 'b) resultat =
+	| Succes of 'a
+	| Echec of 'b
+
+type reussite = string
+
+type erreur =
+	| WifiInconnu
+	| PermissionRefuse
+	| MauvaiseSecurite
+
+let connection_wifi (reseau: string): string =
+	let recuperer_message: (reussite, erreur) resultat = <inserer fonction> in
+	match recuperer_message with
+	| Succes(msg) -> msg
+	| Echec(err)  -> match err with
+		| WifiInconnu -> "resau wifi " ^ reseau ^ " inconnu"
+		| PermissionRefuse -> "Connection au reseau " ^ resau ^ " refusé."
+		| MauvaiseSecurite -> "Reseau wifi " ^ resau ^ " non sécurisé, abandon."
+```
+
+### Les types récursifs
+
+On peut définir un énum de façon récursive, c'est à dire qu'il se contient lui même dans sa définition. Cet énum doit contenir au moins un constructeur statique pour que la récursion puisse s'arrêter. Cela permet de créer des arbres, car chaque élément contient une ou plusieures valeurs et un ou plusieurs autres énum qui contienent eux mêmes une ou plusieurs valeurs et au encore un ou plusieurs autres énums... jusqu'a ce qu'on atteigne la fin.
+
+Syntaxe : `type <nom_du_type> = <constructeur_statique> | <constructeur_dynamique> of <type> * <nom_du_type>`
+
+On peut avoir plusieurs constructeurs statiques ou constructeur dynamiques ayant une des tuples différents suivants le type d'arbre qu'on veut construire. Par exemple, avec un constructeur dynamique `<constructeur_dynamique> of (int*int) * <nom_du_type> * <nom_du_type>`, on va créer un arbre dont chaque branche contient un tuple `int*int` et deux autres branches.
+
+Remarque : Si vous voulez utiliser un arbre dont toutes les valeurs ont le même type, une seule nouvelle branche au bout de chaque branche et un seul constructeur statique, vous venez de faire une liste. Faite pas ça, il existe déjà des listes en OCaml qui font la même chose que ça de façon beaucoup plus claire.
+
+Exemple :
+
+```ocaml
+type ex_arbre = Feuilles | BrancheCoupe | Pos of (int*int*int) * ex_arbre * ex_arbre
+
+(* un arbre possible avec le type ex_arbre est : *)
+let arbre: ex_arbre =
+    Pos((0, 0, 0),
+        Pos((1, 0, 0),
+            Pos((2, 1, -1), Feuilles, Feuilles),
+            Pos((2, 1, 0), Feuilles, Feuilles)
+        ),
+        Pos((0, 1, 0),
+            Pos((1, 3, 2), Feuilles, Feuilles),
+            BrancheCoupe
+        )
+    )
+```
+
+On se retrouve donc avec un énorme tuple imbriqué de type ex_arbre. (Fonction pour dépiler tout ce bordel arrive bientôt)
 
 ---
 
@@ -487,8 +606,8 @@ exemples :
 (* Calcule le produit factoriel d'un nombre *)
 let rec fact (n: int): int =
 	match n > 1 with
-		| true  -> n * fact(n - 1)
-		| false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
+	| true  -> n * fact(n - 1)
+	| false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
 ;;
 
 (*
