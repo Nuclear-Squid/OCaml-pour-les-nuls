@@ -21,14 +21,14 @@
 - [Composition de fonctions](#composition-de-fonctions)
     * [Le mot clé `in`](#le-mot-clé-in)
     * [Le simple point-virgule](#le-simple-point-virgule)
-- [Types customs et structures de donnés avancés](#types-customs-et-structures-de-donnes-avances)
+- [Types customs et structures de donnés avancés](#types-customs-et-structures-de-donnés-avancés)
     * [Les types synonymes](#les-types-synonymes)
     * [Les tuples (ou types produits)](#les-tuples-ou-types-produits)
-    * [Les énumérés (ou types sommes)](#les-enumeres-ou-types-sommes)
+    * [Les énumérés (ou types sommes)](#les-énumérés-ou-types-sommes)
     * [Associer une valeur a un constructeur](#associer-une-valeur-a-un-constructeur)
-    * [Les inférences de types (ou polymorphie)](#les-inferences-de-types-ou-polymorphie)
-    * [Les types récursifs](#les-types-recursifs)
-- [Fonctions récursives](#fonctions-recursives)
+    * [Les inférences de types (ou polymorphie)](#les-inférences-de-types-ou-polymorphie)
+    * [Les types récursifs](#les-types-récursifs)
+- [Fonctions récursives](#fonctions-récursives)
 ---
 
 ## Types de données
@@ -303,7 +303,7 @@ toutes les expressions de sorties doivent renvoyer le même type.
 le cas `_` va "récupérer" tous les cas non traité opparavent.
 
 exemple, on verifie que le jour donné est possible :
-        
+
 ```ocaml
 (* expression qui renvoit true si la date est valide et false dans le cas contraire *)
 match m with
@@ -473,11 +473,11 @@ exemple :
 
 ```ocaml
 (* Position d'une pièce sur un jeu d'échec. None si elle sort du terrain *)
-type position = None | Coord of (int*int)
+type position = HorsPlateau | Coord of (int*int)
 
 (* Avance un pion d'une case si il le peut, renvoie None sinon *)
 let avance_pion ((x, y): int*int): position =
-    if y >= 8 then None else Coord(x, y + 1)
+    if y >= 8 then HorsPlateau else Coord(x, y + 1)
 
 (* Caste un type int*int en type string *)
 let string_of_coord ((x, y): int*int): string =
@@ -485,15 +485,15 @@ let string_of_coord ((x, y): int*int): string =
 
 (* Caste un type position en type string *)
 let string_of_position (coord: position): string = match coord with
-    | None     -> "None"
-    | Coord(c) -> string_of_coord c
+    | HorsPlateau -> "en dehors du plateau"
+    | Coord(c)    -> string_of_coord c
 ;;
 
 Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 5)));
 (* Écrit dans la console : "La position du pion est (4, 6)." *)
 
 Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 9)))
-(* Écrit dans la console : "La position du pion est None." *)
+(* Écrit dans la console : "La position du pion est en dehors du plateau." *)
 ```
 
 ### Les types options
