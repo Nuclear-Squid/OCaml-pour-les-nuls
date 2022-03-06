@@ -13,7 +13,7 @@
     * [Appeler une fonction](#appeler-une-fonction)
     * [Le double point-virgule (`;;`)](#le-double-point-virgule-)
     * [Le rôle des parenthèses dans les appels de fonctions](#le-rôle-des-parenthèses-dans-les-appels-de-fonctions)
-	* [Sémantique de fonctions](#sémantique-de-fonctions)
+    * [Sémantique de fonctions](#sémantique-de-fonctions)
 - [Afficher un message dans la console](#afficher-un-message-dans-la-console)
 - [Tests et conditions](#tests-et-conditions)
     * [Tests avec `if`](#tests-avec-if)
@@ -261,12 +261,12 @@ syntaxe :
 
 ```ocaml
 if <expression_booléenne> then
-	<expression>
+    <expression>
 else if <expression_booléenne> then
-	<expression>
+    <expression>
 ...
 else
-	<expression>
+    <expression>
 ```
 
 toutes les expressions de sorties doivent renvoyer le même type.
@@ -280,9 +280,9 @@ if estPair a then a + 1 else a
 
 (* un bloc if-else *)
 if x >= 5 then 
-	moyenne x y
+    moyenne x y
 else
-	moyenne 5 y
+    moyenne 5 y
 ;;
 ```
 
@@ -295,7 +295,7 @@ syntaxe :
 match <expression> with
 | <val1> | <val2> | ... | <valn> -> <expression n°1>
 ...
-| _			                     -> <dernière expression>
+| _                                 -> <dernière expression>
 ```
 
 toutes les expressions de sorties doivent renvoyer le même type.
@@ -303,7 +303,7 @@ toutes les expressions de sorties doivent renvoyer le même type.
 le cas `_` va "récupérer" tous les cas non traité opparavent.
 
 exemple, on verifie que le jour donné est possible :
-		
+        
 ```ocaml
 (* expression qui renvoit true si la date est valide et false dans le cas contraire *)
 match m with
@@ -323,7 +323,7 @@ on peut aussi "matcher" plusieurs variables en même temps.
 match x, y with
 | (42, 42)          -> 2
 | (_, 42) | (42, _) -> 1
-| (_, _)		    -> 0
+| (_, _)            -> 0
 ;;
 ```
 
@@ -348,11 +348,11 @@ let a = x*2 and b = y*2 in moyenne a b
 
 (* utilise  "in" pour définir une fonction (min2) et des variables (m et n) *)
 let min4 (a: int) (b: int) (c: int) (d: int) : int =
-	let min2 (x: int) (y: int) = 
-		if x < y then x else y
-	in
-	let m = min2 a b and n = min2 c d in
-	min2 m n
+    let min2 (x: int) (y: int) = 
+        if x < y then x else y
+    in
+    let m = min2 a b and n = min2 c d in
+    min2 m n
 ;;
 ```
 
@@ -365,7 +365,8 @@ exemples :
 - afficher un message dans la console au mileu d'une expression :
 
 ```ocaml
-Printf.printf "le mois %i n'existe pas\n%!" (n); false (* écrit dans le terminal "le mois <n> n'existe pas" et renvoie "false" *)
+(* écrit dans le terminal "le mois <n> n'existe pas" et renvoie "false" *)
+Printf.printf "le mois %i n'existe pas\n%!" (n); false
 ```
 
 - tester une fonction :
@@ -421,7 +422,7 @@ Remarques :
 
 ```ocaml
 let string_of_position ((x, y): position): string =
-	"(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ")"
+    "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ")"
 
 (* string_of_position (12, 5) => "(12, 5)" *)
 ```
@@ -445,8 +446,8 @@ Comme pour les tuples, il est impossible d'afficher directement un constructeur 
 
 ```ocaml
 type langages =
-	| Python | C | Cpp | Bash | Java | Perl
-	| JavaScript | Haskel | Ocaml | Elm | Fsharp
+    | Python | C | Cpp | Bash | Java | Perl
+    | JavaScript | Haskel | Ocaml | Elm | Fsharp
 
 let tier_list_langages (l: langages): tiers = match l with
     | Bash | Elm          -> "S"
@@ -510,7 +511,7 @@ let case = int * int
 
 let milieu_cases ((i, j): case) ((x, y): case) =
     let milieu_existe ((i, j): case) ((x, y): case): bool =
-		((x-i) mod 2 = 0) && ((y-j) mod 2 = 0)
+        ((x-i) mod 2 = 0) && ((y-j) mod 2 = 0)
     in
     else if not (milieu_existe(i, j) (x, y)) then None
     else Some ((i + x) / 2, (j + y) / 2)
@@ -536,24 +537,24 @@ Exemple, faire un arbre de décision à l'aide d'un énum d'énum :
 ```ocaml
 (* Programme qui permet de se connecter à un réseau wifi *)
 type ('a, 'b) resultat =
-	| Succes of 'a
-	| Echec of 'b
+    | Succes of 'a
+    | Echec of 'b
 
 type reussite = string
 
 type erreur =
-	| WifiInconnu
-	| PermissionRefuse
-	| MauvaiseSecurite
+    | WifiInconnu
+    | PermissionRefuse
+    | MauvaiseSecurite
 
 let connection_wifi (reseau: string): string =
-	let recuperer_message: (reussite, erreur) resultat = <inserer fonction> in
-	match recuperer_message with
-	| Succes(msg) -> msg
-	| Echec(err)  -> match err with
-		| WifiInconnu -> "resau wifi " ^ reseau ^ " inconnu"
-		| PermissionRefuse -> "Connection au reseau " ^ resau ^ " refusé."
-		| MauvaiseSecurite -> "Reseau wifi " ^ resau ^ " non sécurisé, abandon."
+    let recuperer_message: (reussite, erreur) resultat = <inserer fonction> in
+    match recuperer_message with
+    | Succes(msg) -> msg
+    | Echec(err)  -> match err with
+        | WifiInconnu -> "resau wifi " ^ reseau ^ " inconnu"
+        | PermissionRefuse -> "Connection au reseau " ^ resau ^ " refusé."
+        | MauvaiseSecurite -> "Reseau wifi " ^ resau ^ " non sécurisé, abandon."
 ```
 
 ### Les types récursifs
@@ -605,22 +606,22 @@ exemples :
 ```ocaml
 (* Calcule le produit factoriel d'un nombre *)
 let rec fact (n: int): int =
-	match n > 1 with
-	| true  -> n * fact(n - 1)
-	| false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
+    match n > 1 with
+    | true  -> n * fact(n - 1)
+    | false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
 ;;
 
 (*
 Décomposition du fonctionnement de la fonction avec `fact 5`:
 fact 5 = 5 * fact 4
-	-> fact 4 = 4 * fact 3
-		-> fact 3 = 3 * fact 2
-			-> fact 2 = 2 * fact 1
-				-> fact 1 = 1
-				=> fact 1 = 1
-			=> fact 2 = 2 * 1 = 2
-		=> fact 3 = 3 * 2 = 6
-	=> fact 4 = 4 * 6 = 24
+    -> fact 4 = 4 * fact 3
+        -> fact 3 = 3 * fact 2
+            -> fact 2 = 2 * fact 1
+                -> fact 1 = 1
+                => fact 1 = 1
+            => fact 2 = 2 * 1 = 2
+        => fact 3 = 3 * 2 = 6
+    => fact 4 = 4 * 6 = 24
 => fact 5 = 5 * 24 = 120
 *)
 ```
