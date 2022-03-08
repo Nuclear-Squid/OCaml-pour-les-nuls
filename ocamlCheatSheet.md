@@ -28,6 +28,7 @@
     * [Associer une valeur a un constructeur](#associer-une-valeur-a-un-constructeur)
     * [Les inférences de types (ou polymorphie)](#les-inférences-de-types-ou-polymorphie)
     * [Les types récursifs](#les-types-récursifs)
+    * [Le type option](#le-type-option)
 - [Fonctions récursives](#fonctions-récursives)
 ---
 
@@ -433,7 +434,7 @@ Les variables de type dit "énumérés" sont des variables dont la valeur ne peu
 
 syntaxe : `type <nom_du_type> = <constructeur1> | <constructeur2> | ... | <constructeurn>`
 
-remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule.
+remarque : les constructeurs doivent **impérativement** commencer par une lettre majuscule. Attention à ne pas utiliser le même nom de constructeur dans plusieurs types différents pour éviter de rendre le programme ambiguë. Cela inclu les constructeurs `None` et `Some of <type>` (voir type option).
 
 exemples :
 
@@ -494,36 +495,6 @@ Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(
 
 Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 9)))
 (* Écrit dans la console : "La position du pion est en dehors du plateau." *)
-```
-
-### Les types options
-
-Les types options sont des types de donnés assez particuliers car ils permettent de renvoyer soit une valeur (d'un type donné), soit rien du tout. L'expression associée à la fonction doit pouvoir renvoyer au moins deux valeurs (à l'aide d'un `if` par exemple), `None` et `Some <var>` respectivement. On peut bien sûr avoir plusieurs `None` ou `Some <var>` dans la fonction. La différence avec un énum dynamique est qu'on a pas un type avec un ou plusieures constructeurs, on a un type synonyme classique mais la fonction précédente peut n'avoir rien renvoyé. Un enum a toujours une valeur.
-
-syntaxe : `let <fonction> <args> = <expression>`
-
-Pour utiliser les valeurs généré par une fonction utilisant un type option il faudra d'abord passer par une fonction intermédiaire pour traiter séparément le cas `None` du cas `Some <var>`. La valeur passé à cette fonction intermédiaire doit être de type `<type> option`.
-
-exemple : On a un a un damier et on cherche la case au milieu de deux autres cases allignés.
-
-```ocaml
-let case = int * int
-
-let milieu_cases ((i, j): case) ((x, y): case) =
-    let milieu_existe ((i, j): case) ((x, y): case): bool =
-        ((x-i) mod 2 = 0) && ((y-j) mod 2 = 0)
-    in
-    else if not (milieu_existe(i, j) (x, y)) then None
-    else Some ((i + x) / 2, (j + y) / 2)
-
-let str_of_case ((i, j): case): string =
-    "(" ^ (string_of_int i) ^ ", " ^ (string_of_int j) ^ ")"
-
-let str_of_case_option (c: case option): string =
-    match c with
-    | None   -> "None"
-    | Some c -> str_of_case c
-;;
 ```
 
 ### Les inférences de types (ou polymorphie)
@@ -587,6 +558,40 @@ let arbre: ex_arbre =
 ```
 
 On se retrouve donc avec un énorme tuple imbriqué de type ex_arbre. (Fonction pour dépiler tout ce bordel arrive bientôt)
+
+### Le type option
+
+Le type option est un type prédéfini en OCaml qui permet de renvoyer soit une valeur (d'un type donné), soit rien du tout. La fonction qui utilise ce type doit pouvoir renvoyer au moins deux valeurs (à l'aide d'un `if` par exemple), `None` et `Some <var>` respectivement. On peut bien sûr avoir plusieurs `None` ou `Some <var>` dans la fonction.
+
+Concrêtement, un type option est énum défini de la façon suivante : `type 'a option = None | Some of 'a`. (n'écrivez pas ça dans votre code, ce type est prédéfini)
+
+syntaxe : `<var / def_fonction>: <type> option`
+
+On peut ensuite traiter les valeurs générés avec une simple match-expression.
+
+exemple : On a un a un damier et on cherche la case au milieu de deux autres cases allignés.
+
+```ocaml
+let case = int * int
+
+let milieu_cases ((i, j): case) ((x, y): case): case option =
+    let milieu_existe ((i, j): case) ((x, y): case): bool =
+        ((x-i) mod 2 = 0) && ((y-j) mod 2 = 0)
+    in
+    else if not (milieu_existe(i, j) (x, y)) then None
+    else Some ((i + x) / 2, (j + y) / 2)
+
+let str_of_case ((i, j): case): string =
+    "(" ^ (string_of_int i) ^ ", " ^ (string_of_int j) ^ ")"
+
+let str_of_case_option (c: case option): string =
+    match c with
+    | None   -> "None"
+    | Some c -> str_of_case c
+;;
+```
+
+Concrêtement, le type option est une grosse rustine pour gérer le cas où une fonction en particulier peut casser. Si il y a une grosse proportion de fonction qui utilise un certain type qui peuvent casser, utilisez plutôt un énum.
 
 ---
 
