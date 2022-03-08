@@ -443,12 +443,12 @@ type etat_machine = On | Off | Standby
 ;;
 ```
 
-Comme pour les tuples, il est impossible d'afficher directement un constructeur dans le terminal avec un print, il faut passer par une fonction intermédiaire. En règle générale, les match-expressions sont très efficaces pour traiter les énums, exemple :
+Comme pour les tuples, il est impossible d'afficher directement un constructeur dans le terminal avec un print, il faut passer par une fonction intermédiaire. En règle générale, les `match-expressions` sont très efficaces pour traiter les énums, exemple :
 
 ```ocaml
 type langages =
-    | Python | C | Cpp | Bash | Java | Perl
-    | JavaScript | Haskel | Ocaml | Elm | Fsharp
+    | Python | C | Cpp | Bash | Java | Perl (* Quelques langages (orienté) objet, et Perl *)
+    | JavaScript | Haskel | Ocaml | Elm | Fsharp (* Quelques langages fonctionnels *)
 
 let tier_list_langages (l: langages): tiers = match l with
     | Bash | Elm          -> "S"
@@ -460,7 +460,7 @@ let tier_list_langages (l: langages): tiers = match l with
 ;;
 ```
 
-On remarque qu'on a pas besoin du `_` car la match-expression est exaustive (on a traité toutes les valeurs possibles de l'énum "langages")
+On remarque qu'on a pas besoin du `_` car la `match-expression` est exaustive (on a traité toutes les valeurs possibles de l'énum "langages")
 
 ### Associer une valeur a un constructeur
 
@@ -468,7 +468,7 @@ On peut aussi associer une valeur a un constructeur pour créer des types de fa�
 
 syntaxe : `type <nom_du_type> = <constructeur_1> of <type_1> | ... | <constructeur_n> of <type_n>`
 
-On peut "déconstruire" ces types avec des match-expressions, ce qui permet de récupérer la valeur d'un constructeur dynamique.
+On peut "déconstruire" ces types avec des `match-expressions`, ce qui permet de récupérer la valeur d'un constructeur dynamique.
 
 exemple :
 
@@ -536,7 +536,7 @@ Syntaxe : `type <nom_du_type> = <constructeur_statique> | <constructeur_dynami
 
 On peut avoir plusieurs constructeurs statiques ou constructeur dynamiques ayant une des tuples différents suivants le type d'arbre qu'on veut construire. Par exemple, avec un constructeur dynamique `<constructeur_dynamique> of (int*int) * <nom_du_type> * <nom_du_type>`, on va créer un arbre dont chaque branche contient un tuple `int*int` et deux autres branches.
 
-Remarque : Si vous voulez utiliser un arbre dont toutes les valeurs ont le même type, une seule nouvelle branche au bout de chaque branche et un seul constructeur statique, vous venez de faire une liste. Faite pas ça, il existe déjà des listes en OCaml qui font la même chose que ça de façon beaucoup plus claire.
+Remarque : Si vous voulez utiliser un arbre dont toutes les valeurs ont le même type, une seule nouvelle branche au bout de chaque branche et un seul constructeur statique, vous venez de faire une liste. Faite pas ça, il existe déjà des listes en OCaml qui font la même chose que ça de façon beaucoup plus claire. (explications sur les listes arrivent bientôt)
 
 Exemple :
 
@@ -557,7 +557,48 @@ let arbre: ex_arbre =
     )
 ```
 
-On se retrouve donc avec un énorme tuple imbriqué de type ex_arbre. (Fonction pour dépiler tout ce bordel arrive bientôt)
+On se retrouve donc avec un énorme tuple imbriqué de type ex_arbre. On peut donc parcourir la liste avec une fonction récursive, où on match le premier élément, et si on a un constructeur qui contient le reste de la liste, on répète la fonction sur cet élément, et ainsi de suite...
+
+Exemple :
+
+```ocaml
+type text_brut = Bite of (string) | Tpl of (int*int*int)
+
+let rec affiche_arbre (a: ex_arbre) (n: profondeur): unit =
+    let affiche_noeud (txt: text_brut) (n: profondeur): unit =
+        let rec indentation (n: profondeur): string = match n with
+            | 0 -> " -> "
+            | _ -> "    " ^ indentation (n-1)
+        and string_of_tpl ((x, y, z): int*int*int): string =
+            "(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ", " ^ string_of_int z ^ ")"
+        in
+        let txt_formate = match txt with
+            | Bite(str)    -> indentation n ^ str
+            | Tpl(x, y, z) -> indentation n ^ string_of_tpl (x, y, z)
+        in Printf.printf "%s\n%!" txt_formate
+    in
+    match a with
+    | Feuilles             -> affiche_noeud (Bite("feuilles")) n
+    | BrancheCoupe         -> affiche_noeud (Bite("branche coupé")) n
+    | Pos((x, y, z), b, c) -> affiche_noeud (Tpl(x, y, z)) n; affiche_arbre b (n+1); affiche_arbre c (n+1)
+
+(* affiche_arbre arbre renvoie ça :
+ -> (0, 0, 0)
+     -> (1, 0, 0)
+         -> (2, 1, -1)
+             -> feuilles
+             -> feuilles
+         -> (2, 1, 0)
+             -> feuilles
+             -> feuilles
+     -> (0, 1, 0)
+         -> (1, 3, 2)
+             -> feuilles
+             -> feuilles
+         -> branche coupé
+
+oui c'est inutilement compliqué mais le résultat est très joli (: *)
+```
 
 ### Le type option
 
@@ -567,7 +608,7 @@ Concrêtement, un type option est énum défini de la façon suivante : `type 
 
 syntaxe : `<var / def_fonction>: <type> option`
 
-On peut ensuite traiter les valeurs générés avec une simple match-expression.
+On peut ensuite traiter les valeurs générés avec une simple `match-expression`.
 
 exemple : On a un a un damier et on cherche la case au milieu de deux autres cases allignés.
 
