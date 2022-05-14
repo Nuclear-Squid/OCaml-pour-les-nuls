@@ -91,6 +91,11 @@ comparaisons :
 
 pour les strings : `^` pour concaténer les chaines (les mettre bout à bout).
 
+pour les listes :
+
+- `::` : rajouter un élément au début d'une liste
+- `@` : concaténer deux listes
+
 ---
 
 ## Variables et fonctions
@@ -123,7 +128,7 @@ Exemple :
 let carre (x: float): float = x *. x
 let estPair (x: int): bool = (x mod 2 = 0) (*mod : reste de la division euclidienne de deux entiers*)
 let moyenne (x: float) (y: float): float = (x +. y) /. 2.0
-let mesage: unit = Printf.printf "un message très utile \n%!"
+let mesage: unit = Printf.printf "Hello world!!\n"
 ;;
 ```
 
@@ -154,14 +159,14 @@ Exemple :
 let x : float = 12.0;;
 let y = carre x;;
 let z = estPair y;;
-Printf.printf "Fin des affectations.\n%!";;
+Printf.printf "Fin des affectations.\n";;
 
 (* Version propre *)
 let x : float = 12.0
 let y = carre x
 let z = estPair y
 ;;
-Printf.printf "Fin des affectations.\n%!"
+Printf.printf "Fin des affectations.\n"
 ```
 
 ### Le rôle des parenthèses dans les appels de fonctions
@@ -239,7 +244,6 @@ Syntaxe: `Printf.printf "message" <val1> ... <valn>`
 Caractères utiles :
 
 - `\n` revient à la ligne, souvent utilisé en fin de message.
-- `%!` vide le buffer du print. Absolument **toujours** l'utiliser en fin de message. Ne pas le mettre veut dire ne jamais libérer la mémoire utilisé par le printf, donc de plus en plus de mémoire inutilement inutilisé après chaque printf. Non je sais pas pourquoi il faut le préciser.
 
 Pour insérer une variable dans le message, on écrit `%<première_lettre_du_type>`, si vous chercher à afficher le contenu d'un tuple ou d'un énum, allez voir la section "Caster des tuples et enmums" du chapitre "Types customs et structures de donnés avancés". Les variables vont être inséré dans l'ordre dont elles sont entré entre les parenthèses.
 
@@ -248,9 +252,9 @@ Pour insérer une variable dans le message, on écrit `%<première_lettre_du_typ
 Exemples :
 
 ```ocaml
-Printf.printf "Hello World!\n%!"
-Printf.printf "x = %f et b = %b\n%!" x b (* écrit dans le terminal "x = 42.12 et b = false" *)
-Printf.printf "x = %f => x^2 = %f\n%!" x (carre x) (* écrit "x = -5.0 => x^2 = 25.0" *)
+Printf.printf "Hello World!\n"
+Printf.printf "x = %f et b = %b\n" x b (* écrit dans le terminal "x = 42.12 et b = false" *)
+Printf.printf "x = %f => x^2 = %f\n" x (carre x) (* écrit "x = -5.0 => x^2 = 25.0" *)
 ```
 
 ---
@@ -312,7 +316,7 @@ match m with
 | 1 | 3 | 5 | 7 | 8 | 10 | 12 -> (1 <= jour) && (jour <= 31)
 | 4 | 6 | 9 | 11              -> (1 <= jour) && (jour <= 30)
 | 2                           -> (1 <= jour) && (jour <= 28)
-| _                           -> Printf.printf "le mois %i n'existe pas\n%!" (m); false
+| _                           -> false
 ;;
 
 (* voir la section 2 de "compositions de fonctions" pour l'explication du ";" *)
@@ -329,7 +333,16 @@ match x, y with
 ;;
 ```
 
-Le pattern matching est une des notions fondamentales de la programation fonctionnelle, ce n'es que les bases. Il y aura plus tard une explication plus poussée pour expliquer les cas plus complexes.
+Le mot-clé `when` peut aussi être utilisé pour apporter une condition en plus sur le patterne, par exemple :
+
+```ocaml
+match n with
+| 42            -> "n vaut 42"
+| x when x < 42 -> "n est inférieur à 42"
+| _             -> "n est supérieur à 42"
+```
+
+Le pattern matching est une des notions fondamentales de la programation fonctionnelle, ce n'est que les bases. Il y a beaucoup d'autres façon plus poussé de reconnaîtres des patternes mais ils ne seront pas traité dans ici
 
 ---
 
@@ -368,14 +381,14 @@ Exemples :
 
 ```ocaml
 (* écrit dans le terminal "le mois <n> n'existe pas" et renvoie "false" *)
-Printf.printf "le mois %i n'existe pas\n%!" (n); false
+Printf.printf "le mois %i n'existe pas\n" (n); false
 ```
 
 - tester une fonction :
 
 ```ocaml
-Printf.printf "le max de %i et %i est %i.\n%!" 12 27 (max2 12 27);
-Printf.printf "le max de %i et %i est %i.\n%!" 32 27 (max2 32 27)
+Printf.printf "le max de %i et %i est %i.\n" 12 27 (max2 12 27);
+Printf.printf "le max de %i et %i est %i.\n" 32 27 (max2 32 27)
 ```
 
 ---
@@ -448,8 +461,9 @@ Comme pour les tuples, il est impossible d'afficher directement un constructeur 
 
 ```ocaml
 type langages =
-    | Python | C | Cpp | Bash | Java | Perl (* Quelques langages (orienté) objet, et Perl *)
-    | JavaScript | Haskel | Ocaml | Elm | Fsharp | Rust (* Quelques langages fonctionnels *)
+    | Python | C | Cpp | Bash | Java  | JavaScript (* Quelques langages (orienté) objet *)
+    | JavaScript | Haskel | Ocaml | Elm | Fsharp (* Quelques langages fonctionnels *)
+	| Rust | Perl (* les langages vraiment chelou *)
 
 let tier_list_langages (l: langages): tiers = match l with
     | Bash | Elm | Rust   -> "S"
@@ -465,11 +479,11 @@ On remarque qu'on a pas besoin du `_` car la `match-expression` est exaustive (o
 
 ### Associer une valeur a un constructeur
 
-On peut aussi associer une valeur a un constructeur pour créer des types de façon dynamiques, ce qui permet d'avoir un type qui contient une valeur de plusieurs types différents, ou un type qui contient des valeurs ou des constructeurs (en général on utilise le deuxième car le premier est très lourd et on peut le faire de façon beaucoup plus propre. Voir inférence de types).
+On peut aussi associer une valeur a un constructeur en lui passant un argument, ce qui permet d'avoir les constructeurs qui sont très efficaces dans les matche-expressions et imparable niveau lisibilité, mais aussi avoir la valeur dont on pourrait avoir besoin dans un seul paqué bien joli.
 
 Syntaxe : `type <nom_du_type> = <constructeur_1> of <type_1> | ... | <constructeur_n> of <type_n>`
 
-On peut "déconstruire" ces types avec des `match-expressions`, ce qui permet de récupérer la valeur d'un constructeur dynamique.
+On peut "déconstruire" ces types avec des `match-expressions`, ce qui permet de récupérer la valeur d'un constructeur avec un argument.
 
 Exemple :
 
@@ -491,16 +505,16 @@ let string_of_position (coord: position): string = match coord with
     | Coord(c)    -> string_of_coord c
 ;;
 
-Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 5)));
+Printf.printf "La position du pion est %s.\n" (string_of_position(avance_pion(4, 5)));
 (* Écrit dans la console : "La position du pion est (4, 6)." *)
 
-Printf.printf "La position du pion est %s.\n%!" (string_of_position(avance_pion(4, 9)))
+Printf.printf "La position du pion est %s.\n" (string_of_position(avance_pion(4, 9)))
 (* Écrit dans la console : "La position du pion est en dehors du plateau." *)
 ```
 
-### Les inférences de types (ou polymorphie)
+### Les fonctions / énums génériques
 
-Quand une fonction ou un constructeur d'un énum peut utiliser plusieurs types différents, on peut utiliser ce qu'on appelle de l'inférence de type. Concrètement, on défini un type générique dans la définition d'une fonction ou d'un autre type et le programme va récupérer le type des valeurs passé en arguments et associer ça au type générique. Il faut écrire le nom de ce type générique de la façon suivante : `'<nom_du_type_générique>`
+Quand une fonction ou un constructeur d'un énum peut utiliser plusieurs types différents, on peut définir un type générique qu'on va utiliser pendant la définition de la fonction / enum. L'interpretteur d'ocaml va donc déterminer à la volée quel type on a passé et l'utiliser à la place du type générique au long de la fonction / enum. Dans le cas des énums, il faut demander ces types génériques en argument, qui sont écrit *avant* le type principal. Il faut écrire le nom de ce type générique de la façon suivante : `'<nom_du_type_générique>`
 
 Syntaxe (passer un type générique en argument à un énum) : `type '<arg> <enum> = <constructeur> of '<arg>`
 
@@ -540,7 +554,7 @@ let afficher_etat_connexion (reseau: string): unit =
         | PermissionRefuse -> "connexion au reseau " ^ resau ^ " refusé."
         | MauvaiseSecurite -> "Reseau wifi " ^ resau ^ " non sécurisé, abandon."
 	(* On affiche le message *)
-	in Printf.printf "%s\n%!" txt
+	in Printf.printf "%s\n" txt
 ```
 
 Remarque, les enums d'énums sont très efficaces pour faire des arbres de décision complexes, et que l'inférence de type nous permet de garder des types très flexibles.
@@ -578,17 +592,24 @@ let str_of_case_option (c: case option): string =
 ;;
 ```
 
-Concrêtement, le type option est une grosse rustine pour gérer le cas où une fonction en particulier peut casser. Si il y a une grosse proportion de fonction qui utilise un certain type qui peuvent casser, utilisez plutôt un énum.
-
 ### Les types récursifs
 
-On peut définir un énum de façon récursive, c'est à dire qu'il se contient lui même dans sa définition. Cet énum doit contenir au moins un constructeur statique pour que la récursion puisse s'arrêter. Cela permet de créer des arbres, car chaque élément contient une ou plusieures valeurs et un ou plusieurs autres énum qui contienent eux mêmes une ou plusieurs valeurs et au encore un ou plusieurs autres énums... jusqu'a ce qu'on atteigne la fin.
+On peut définir un énum de façon récursive, c'est à dire qu'il se contient lui même dans sa définition. Cet énum doit contenir au moins un constructeur qui ne fait pas la récursion pour que la récursion puisse s'arrêter. Cela permet de créer des arbres, car chaque élément contient une ou plusieures valeurs et un ou plusieurs autres énum qui contienent eux mêmes une ou plusieurs valeurs et au encore un ou plusieurs autres énums... jusqu'a ce qu'on atteigne la fin.
 
-Syntaxe : `type <nom_du_type> = <constructeur_statique> | <constructeur_dynamique> of <type> * <nom_du_type>`
+Syntaxe : `type <nom_du_type> = <constructeur> | <constructeur> of <type> * <nom_du_type>`
 
-On peut avoir plusieurs constructeurs statiques ou constructeur dynamiques ayant une des tuples différents suivants le type d'arbre qu'on veut construire. Par exemple, avec un constructeur dynamique `<constructeur_dynamique> of (int*int) * <nom_du_type> * <nom_du_type>`, on va créer un arbre dont chaque branche contient un tuple `int*int` et deux autres branches.
+exemple :
 
-Remarque : Si vous voulez utiliser un arbre dont toutes les valeurs ont le même type, une seule nouvelle branche au bout de chaque branche et un seul constructeur statique, vous venez de faire une liste. Faite pas ça, il existe déjà des listes en OCaml qui font la même chose que ça de façon beaucoup plus claire. (explications sur les listes arrivent bientôt)
+```ocaml
+type 'a liste_debile = 
+	| Fin
+	| Elem of 'a * liste_debile
+
+let liste: int liste_debile = Elem(12, Elem(-5 , Elem(69420, Fin)))
+;;
+```
+
+Cette façon de faire des liste est vraiment lourde et il existe des vrais liste, donc il vaut mieux utiliser ça quand c'est possible. par contre, contrairement au listes les types récursifs permettent d'avoir plusieurs constructeurs qui font la récursion pour (par exemple) avoir une liste de plusieurs types différents. On peut aussi avoir un contructeur qui fait plusieurs fois la récursion et donc faire un arbre.
 
 Exemple :
 
@@ -596,7 +617,7 @@ Exemple :
 type arbre =
 	| Feuilles
 	| BrancheCoupe
-	| Pos of (int*int*int) * ex_arbre * ex_arbre
+	| Pos of (int*int*int) * arbre * arbre
 
 (* un arbre possible avec le type ex_arbre est : *)
 let petit_arbre: arbre =
@@ -610,9 +631,39 @@ let petit_arbre: arbre =
             BrancheCoupe
         )
     )
+;;
 ```
 
-On se retrouve donc avec un énorme tuple imbriqué de type ex_arbre. Pour voir comment utiliser ces arbres dans une fonction, allez voir la section sur le traitement des arbres dans le chapitre sur les fonctions récursives.
+On se retrouve donc avec un énorme tuple imbriqué de type arbre. Pour voir comment utiliser ces arbres dans une fonction, allez voir la section sur le traitement des types récursifs dans le chapitre sur les fonctions récursives.
+
+## Les listes
+
+Les listes permettent de faire une séquence d'éléments d'un type donnés. On définit une liste avec la syntaxe suivante : `<nom_liste>: <type> list = [<elem1>; <elem2>; ... ; <elem_n>]`
+
+par exemple :
+
+```ocaml
+type nom = str
+type age = int
+type humain = nom * age
+
+let copains: humains list = [("Jaquie", 52); ("Michelle", 69)]
+;;
+```
+
+On retrouve deux opérateurs pour travailler sur les liste : `::` et `@`. Le premier permet de rajouter un élément au début d'une liste, donc par exemple :
+
+```ocaml
+[12; 42] = 12 :: [42] = 12 :: 42 :: []
+```
+
+Le `@` quand à lui permet de concaténer (metre bout à bout deux listes), donc par exemple :
+
+```ocaml
+[1; 2; 3] @ [4; 5; 6] = [1; 2; 3; 4; 5; 6]
+```
+
+Non on ne peut pas chercher un élément en particulier d'une liste (en tout cas pas sans le module `List`), contrairement à tous les autres langages de prog du monde, parce que fuck ocaml
 
 ---
 
@@ -633,10 +684,11 @@ Exemples :
 
 ```ocaml
 (* Calcule le produit factoriel d'un nombre *)
-let rec fact (n: int): int =
-    match n > 1 with
-    | true  -> n * fact(n - 1)
-    | false -> n (* quand n = 1, on arrête la récursion, donc la fonction s'arrête. *)
+let rec fac (n: int): int =
+	match n with
+	| 0 | 1        -> 1 (* On ne rappelle pas la fonction donc la récurence s'arrête *)
+	| x when x < 0 -> fac (-x)
+	| _            -> n * fac (n-1)
 ;;
 
 (*
@@ -654,11 +706,25 @@ fact 5 = 5 * fact 4
 *)
 ```
 
-### Traiter une liste ou un arbre
+### Traiter un type récursif
 
-Les fonctions récursives sont utiles pour parcourir les arbres (voir section sur les types récursifs). Puisque le premier élément contient un constructeur parmis ceux définis par le type récursif utilisé, on peut demander un seul argument appartenant au type récursif à traiter. Ensuite, on utilise une `match-expression` pour savoir sur quel constructeur on est tombé. On peut ensuite traiter les valeurs comme on veut et rappeler la fonction sur chaque élément qui contient la suite de l'arbre (si ils existent).
+On va utiliser des fonctions récursives pour traiter les types récursifs, car ils contiennent "un élément puis la suite", par exemple si on veut récupérer le nombre d'éléments d'une 'liste' créé avec un type récursif on peut faire ça:
 
-Par exemple, on va reprendre l'arbre défini dans la section sur les types récursifs et afficher son contenu avec des jolis indentations :
+```ocaml
+type 'a liste_debile = 
+	| Fin
+	| Elem of 'a * ('a liste_debile)
+
+let liste: int liste_debile = Elem(12, Elem(-5 , Elem(69420, Fin)))
+
+let rec  longueur (l: 'a liste_debile): int =
+	match l with
+	| Fin -> 0
+	| Elem(_, suite) -> 1 + longueur suite
+;;
+```
+
+Un arbre est juste un type récursif avec plusieures branches, donc il suffit de faire la récursion sur chacune de ces branches, par exemple, on va reprendre l'arbre défini dans la section sur les types récursifs et afficher son contenu avec des jolis indentations :
 
 ```ocaml
 (* Défini un arbre dont chaque noeud a une position et donne deux branches *)
@@ -692,7 +758,7 @@ let rec affiche_arbre (a: arbre) (n: profondeur): unit =
             match n with
             | 0 -> " -> " ^ txt
             | _ -> "    " ^ text_indente txt (n-1)
-        in Printf.printf "%s\n%!" (text_indente txt n)
+        in Printf.printf "%s\n" (text_indente txt n)
         
 	(* Convertir un tuple (x, y, z): int*int*int en string *)
     and string_of_tuple ((x, y, z): int*int*int): string =
@@ -725,3 +791,205 @@ Oui c'est inutilement compliqué mais le résultat est très joli (: *)
 ```
 
 Remarque : même si l'arbre de départ est plutot complexe, on peut remarquer que la fonction pour le parcourir reste (relativement) simple, car on ne match qu'un seul élément à la fois et qu'après le match, les traitements sont simples.
+
+### Traiter une liste
+
+Traiter une liste est très similaire à traiter un type récursif, on va faire une fonction récursive qui va demander une liste en argument, puis un va faire une match expression pour voir si la liste est vide (pour savoir quand arrêter la récursion), puis on va regarder le premier élément de la liste, le traiter, et recommencer avec la suite.
+
+Exemple :
+
+```ocaml
+let l: int list = [2; 5; 8; 3; 2; 2; 4]
+
+let rec nb_occurences (l: 'a list) (val_a_chercher: 'a) =
+	match l with
+	| [] -> 0
+	| elem :: suite -> (
+		if elem = val_a_chercher then
+			1 + nb_occurences suite val_a_chercher
+		else 
+			nb_occurences suite val_a_chercher
+	)
+;;
+
+Printf.printf "%d\n" (nb_occurences l 2);
+(* Affiche 3 *)
+```
+
+---
+
+## Les fonctions d'ordre supérieur
+
+Les fonctions d'ordres supérieurs sont des fonctions qui demande en argument et / ou renvoient d'autre fonctions.
+
+### Passer en argument / renvoyer une fonction
+
+Vous avez surement remarqué que dans une console ocaml, les une fonction qui prends en argument un int en renvoie un int est écris de la façon suivante : `int -> int = <fun>`. On peut utiliser une notation très similaire pour décrire le type d'une fonction passé en argument ou renvoyé, par exemple, si on veut faire une fonction qui calcule une approximation de la dérivée d'une fonction en un point on peut faire ça :
+
+```ocaml
+let derivee_v1 (f: float -> float) (x: float): float =
+	let dx = 0.0000001 in
+	(f (x +. dx) -. f x) /. dx (* oubliez pas les `.` pour les opérateurs des floats *)
+;;
+
+Printf.printf "%f\n" (derivee_v1 sin 0.);
+(* Affiche "1." *)
+```
+
+### Les fonctions anonymes
+
+Les fonctions anonymes sont des fonctions qui n'ont pas de nom (comme leur nom l'indique). Elles sont utilisés pour générer à la volée des fonctions, ce qui permet notemment à une fonction de renvoyer une autre fonction.
+
+syntaxe : `fun <args> -> <corps_de_la_fonction>`
+
+Dans l'exemple précédent, on a fait une fonction qui calcule la dérivée d'une fonction en un point, mais on peut l'adapter un peut pour qu'elle renvoie à la place la dérivee de la fonction :
+
+```ocaml
+let derivee_v2 (f: float -> float): float -> float =
+	let dx = 0.000001 in
+	fun x -> (f (x +. dx) -. fx) /. dx
+;;
+
+Printf.printf "%d\n" ((derivee_v2 (fun x -> x**2. +. 3.*.x +. 12.)) 5.);
+(* Affiche 13.00000188... *)
+```
+
+Dans cet exemple, on a généré une fonction à la volée avec `fun` et calculé sa dérivée. On note les parenthèses autour de la fonction `derive` et la fonction passé en argument, c'est pour éviter que `5.` soit passé comme un deuxième argument à derivee, mais plutôt comme un argument passé à la fonction qui sort de `derivee <fct>`.
+
+### Curification
+
+La curification (en plus d'avoir le meilleur nom de tous les temps) est vraiment utiles pour faire des raccourcis en ocaml. Le principe est que si on ne donne pas les n derniers arguments à une fonction, au lieu de renvoyer une valeur, la fonction va renvoyer une fonction anonyme qui va demander n arguments (qui auront les mêmes types que les arguments ignorés), et qui va agir comme la fonction d'origine une fois qu'on donne ces arguments manquants.
+
+exemple, on calcule la dérivée d'une fonction avec `derivee_v1` :
+
+```ocaml
+let f_prime = (derivee_v1 (fun x -> x *. 3.))
+;;
+
+Printf.printf "%d\n" (f_prime 12.);
+(* Affiche 2.9999999..... *)
+```
+
+Vu comme ça, la curification parraît pas super utile, mais on va voir que c'est particulièrement utile avec les fonctions du module `List`.
+
+## Le module List
+
+On a vu précédemment qu'une façon de traiter une liste est de passer par une fonction récursive, mais on peut gagner beaucoup de temps avec les fonctions du module `List`. Il existe beaucoup de fonctions dans ce module, mais on va voir les plus importantes. (toutes les fonctions du modules sont données ici : https://v2.ocaml.org/api/List.html)
+
+### List.mem
+
+`List.mem` prends en argument une valeur puis une liste et renvoie `true` si l'élément est présent dans la liste et `false` sinon.
+
+exemple :
+
+```ocaml
+let l: int list = [1; 2; 3; 4; 5]
+;;
+
+Printf.printf "%b, %b\n" (List.mem 12 l) (List.mem 2 l);
+(* Affiche "false, true" *)
+```
+
+### List.map
+
+`List.map` va prendre en argument une fonction (qui ne demande qu'un seul argument) puis une liste, et va renvoyer une nouvelle liste composé des éléments de la liste précédentes après être passé dans la fonction.
+
+exemple :
+
+```ocaml
+let l1: int list = [1; 2; 3; 4; 5]
+let l2: int list = List.map (( + ) 2) l1
+;;
+
+(* l2 = [3; 4; 5; 6; 7] *)
+```
+
+Dans cet exemple, on peut remarqué qu'on a curifié l'opérateur `+` pour en faire une fonction qui demande deux arguments et les additionnent, sauf qu'on a direct donné 2, donc `List.map` a ajouté 2 à tous les éléments de la liste. Cela revient à faire `fun n -> n + 2`, mais en beaucoup plus court
+
+### List.filter
+
+`List.filter` va prendre en argument une fonction (qui demande un argument et qui renvoie un booléen) et une liste, et va renvoyer une liste de tous les éléments qui donnent `true` en passant dans la fonction.
+
+exemple :
+
+```ocaml
+let l1: int list = [1; 2; 3; 4; 5]
+let l2: int list = List.filter (fun n -> n <= 3) l1
+;;
+
+(* l2 = [1; 2; 3] *)
+```
+
+### List.filter_map
+
+C'est une combinaison de `List.filter` et `List.map`, ça va prendre en argument une fonction (qui demande un argument et renvoie un type option) et une liste et renvoie une liste avec toutes les valeurs à l'intérieur des constructeurs `Some` et ignorer tous les `None`.
+
+exemple :
+
+```ocaml
+let f (n: int): int option =
+	if n * 2 >= 6 then
+		Some(n * 2)
+	else
+		None
+
+let l1: int list = [1; 2; 3; 4; 5]
+let l2: int list = List.filter_map f l1
+;;
+
+(* l2 = [6; 8; 10] *)
+```
+
+### List.fold_left
+
+`List.fold_left` permet de réduire une liste à un élément. Elle demande :
+
+- une fonction qui va demander deux arguments (respectivement de type `'a` et `'b`) qui va renvoyer une valeur de type `'a` (voir les fonctions génériques)
+- une valeur de départ de type `'a`
+- une liste de type `'b'`
+
+et va renvoyer à la fin une valeur de type `'a`
+
+La fonction va d'abord prendre la valeur de départ et le premier élément de la liste et les passer en argument à la fonction, ce qui va renvoyer une valeur. La fonction va ensuite récupérer cette valeur, prendre le deuxième élément de la liste et les passer en argument à la fonction. Cela va répèter ce processus jusqu'à ce que la liste soit vide.
+
+Remarque : `'a` et `'b` peuvent être le même type.
+
+Exemple :
+
+```ocaml
+let l: int list = [37.; 4.; 52.]
+;;
+
+(* Affiche l'élément le plus petit de la liste *)
+Pritnf.printf "%f\n" (List.fold_left min Float.infinity l);
+(* Affiche "4." *)
+```
+
+### List.fold_right
+
+`List.fold_right` est très similaire à list.fold_left sauf qu'au lieu de générer une valeur avec le premier élément de la liste et une valeur de départ, puis la passer en argument à la fonction avec le deuxième élément de la liste (et ainsi de suite), on va modifier la valeur de départ en passant en argument successivement toutes les valeurs de la liste.
+
+par exemple :
+
+```ocaml
+type mouvement = Haut | Bas | Gauche | Droite
+type position = int * int
+
+let position_robot: position = (0, 0)
+
+let deplacement (m: mouvement) ((x, y): position): position =
+	match m with
+	| Haut   -> (x, y+1)
+	| Bas    -> (x, y-1)
+	| Gauche -> (x-1, y)
+	| Droite -> (x+1, y)
+
+let liste_mouvement: mouvement list = [Haut; Droite; Droite; Bas; Droite]
+
+let affiche_position ((x, y): position): unit =
+	Printf.printf "(%d, %d)\n" x y
+;;
+
+affiche_position (List.fold_right deplacement liste_mouvement position_robot);
+(* Affiche "(3, 0)" *)
+```
