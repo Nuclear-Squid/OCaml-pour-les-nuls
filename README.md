@@ -143,8 +143,11 @@ fonction de demande pas d'arguments donc son contenu est évalué tout de suite)
 let message () = printf "Ceci est mon tout premier programme OCaml !!\n"
 ```
 
-si on retire `()`, le message va apparaître dans la console quoi qu'il arrive,
-avant d'arriver au point d'entrée principal.
+si on retire `()`, non seulement le message va apparaître dans la console quoi
+avant d'arriver au point d'entrée principal, mais l'expression va être considéré
+comme une variable, donc on cherche à stocker la sortie de `printf`, qui est de
+type `unit`. Ça implique que `message` ne stock `<rien>`, et essayer d'utiliser
+`message` ne fera rien.
 
 ### 1.4 Le rôle du point-virgule
 
@@ -154,6 +157,7 @@ verra dans le chapitre 2 comment faire ça. On va voir ici comment on peut s'en
 servir pour executer plusieurs prints :
 
 ```ocaml
+message ();
 printf "42 * 2 = %d\n" (double 42);
 printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne 16.5 23.75)
 ```
