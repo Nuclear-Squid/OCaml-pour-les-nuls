@@ -82,15 +82,12 @@ de problèmes.
 +--------+----------------------+----------------------+-----+
 ```
 
-Les opérateurs de comparaison sont :
+Les opérateurs de comparaison sont : `=` (est égal à) `<>` (est différent à) `>` `>=` `<` `<=`
 
-- `=` (est égal à)
-- `<>` (est différent à)
-- `>` (suppérieur)
-- `>=` (suppérieur ou égal)
-- `<` (inférieur)
-- `<=` (inférieur ou égal)
-- (ces opérateurs renvoient des boolées).
+Je recommande d'inclure le module `Poly` (avec la commande `open Poly` en
+entête de fichier), car ça permet de rendre ces opérateurs polymorphiques,
+c'est-à-dire compatible avec n'importe quel type de donnée (tant que c'est le
+même des deux côtés).
 
 
 note: `~-` et `~-.` renvoient l'opposée de la valeur
@@ -184,7 +181,5 @@ dans la console. Le chapitre suivant porte sur les définitions locales et le
 pattern matching. Vous pourrez aussi retrouver (comme pour tous les autres
 chapitres) un fichier `.ml` qui utilise toutes le notions vu au cours du
 chapitre dans le dossier `ExemplesFinChapitres`.
-
-# 2. Définitions locales et pattern matching
 
 
