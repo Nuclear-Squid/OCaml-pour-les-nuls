@@ -1,6 +1,18 @@
 # OCaml pour les nuls
 
-## 0. Préliminaires
+---
+## Table des matières
+
+0. [Préliminaires](#0-préliminaires)
+1. [Les bases](#1-les-bases)
+	1. [Les types de données de base](#11-les-types-de-données-de-base)
+	2. [Variables et fonctions](#12-variables-et-fonctions)
+	3. [Le rôle des parenthèses](#13-le-rôle-des-parenthèses)
+	4. [Le rôle du point-virgule](#14-le-rôle-du-point-virgule)
+	5. [Conclusion](#15-conclusion)
+---
+
+# 0. Préliminaires
 
 Commencez bien-évidemment par installer OCaml, la façon recommandé est de passer
 par [opam](https://opam.ocaml.org/doc/Install.html), le gestionnaire de paquet
@@ -22,7 +34,7 @@ le programme. Si aucun message d'erreur s'affiche, vous pouvez lancer
 de build ne disparaissent pas avant d'executer le programme, si c'est le cas chez
 vous, vous pouvez lancer à la place `dune build && ./_build/default/bin/main.exe`)
 
-### Avant de rentrer dans le vif du sujet
+## Avant de rentrer dans le vif du sujet
 
 Je recomande de toujours utiliser les librairies `Base` (une réécriture de l'API
 de la stdlib qui est beaucoup plus propre que l'API par défaut) et `Stdio` (qui
@@ -45,7 +57,7 @@ let () = printf "Hello, world !!\n"
 ces deux librairies sont utilisés. Vous pourrez trouver une documentation de
 la librairie `Base` [ici](https://ocaml.janestreet.com/ocaml-core/v0.13/doc/base/Base/index.html)
 
-## 1. Les bases
+# 1. Les bases
 
 OCaml n'a pas de point d'entrée dédié, comme une fonction `main` en C, le langage
 va juste évaluer les expressions dans l'ordre dans lesquels ils les lis jusqu'à
@@ -55,7 +67,7 @@ contenu va être évalué tout de suite, l'expression à forcément type `unit`,
 vu qu'elle n'a pas de nom, le fait qu'on ne l'utilise pas ailleurs ne pose pas
 de problèmes.
 
-### 1.1. Les types de données de base
+## 1.1. Les types de données de base
 
 ```
 +--------+----------------------+------------------------+-----+
@@ -86,7 +98,7 @@ note: `~-` et `~-.` renvoient l'opposée de la valeur
 fmt est le format a utiliser pour insérer une valeur dans un print. Pour plus
 d'informations, regardez la [doc](https://ocaml.janestreet.com/ocaml-core/v0.13/doc/base/Base/Printf/index.html)
 
-### 1.2 Variables et fonctions
+## 1.2. Variables et fonctions
 
 OCaml est un langage fonctionnel, donc les variables sont immuables, c'est-à-dire
 qu'on ne peut pas les modifier. C'est parce que les variables de bases et les
@@ -118,7 +130,7 @@ Pour appeler une fonction, il suffit d'écrire le nom de la fonction, puis donne
 les arguments séparés par un espace. Par exemple `double x` va renvoyer 138, et
 `moyenne y z` va renvoyer 23.06.
 
-### 1.3 Le rôle des parenthèses dans les appels de fonctions
+## 1.3. Le rôle des parenthèses
 
 On utilise les parenthèses pour rendre explicite les cas où l'ordre d'évaluation
 des arguments est ambiguë. Par exemple :
@@ -149,7 +161,7 @@ comme une variable, donc on cherche à stocker la sortie de `printf`, qui est de
 type `unit`. Ça implique que `message` ne stock `<rien>`, et essayer d'utiliser
 `message` ne fera rien.
 
-### 1.4 Le rôle du point-virgule
+## 1.4. Le rôle du point-virgule
 
 Le point-virgule permet de séparer des expressions qui renvoient `unit`, pour
 pouvoir les enchaîner. Ça ne permet **pas** de définir une variable locale, on
@@ -165,7 +177,7 @@ printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne 16.5 23.75)
 (Attention a ne pas mettre de `;` sur la dernière ligne, sinon la définition de
 fonction n'es jamais terminée)
 
-### 1.5 Conclusion
+## 1.5. Conclusion
 
 Pour l'instant on sait faire des fonctions de bases et afficher le résultat
 dans la console. Le chapitre suivant porte sur les définitions locales et le
