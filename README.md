@@ -70,7 +70,7 @@ de problèmes.
 +--------+----------------------+------------------------+-----+
 ```
 
-Les opérateurs de comparaison sont :
+Les opérateurs de comparaison sont :
 
 - `=` (est égal à)
 - `<>` (est différent à)
@@ -96,9 +96,9 @@ On peut déclarer une variable de la façon suivante :
 
 ```ocaml
 (* syntaxe: let <nom_variable> : <type> = <valeur> *)
-let x: int = 69
-let y: float = 42.
-let z = 4.12
+let x: int = 42
+let y: float = 16.5
+let z = 23.75
 (* le type peut être inféré, ici z est un float *)
 ```
 
@@ -118,7 +118,7 @@ Pour appeler une fonction, il suffit d'écrire le nom de la fonction, puis donne
 les arguments séparés par un espace. Par exemple `double x` va renvoyer 138, et
 `moyenne y z` va renvoyer 23.06.
 
-### 1.3 Le rôle des parenthèses dans les appels de fonctins
+### 1.3 Le rôle des parenthèses dans les appels de fonctions
 
 On utilise les parenthèses pour rendre explicite les cas où l'ordre d'évaluation
 des arguments est ambiguë. Par exemple :
@@ -133,3 +133,38 @@ moyenne Float.of_int double 12 -5.
 moyenne (Float.of_int (double 12)) (-5.) (* ici, les arguments sont valides *)
 ```
 
+On utilise aussi `()` en tant qu'argument de fonction quand la fonction ne demande
+aucun argument, car une expression qui ne demande pas d'argument va avoir le côté
+droit de l'équation évalué tout de suite, même si on n'appelle pas la fonction.
+(Rappel : c'est ça qui perment à `let () = ...` d'être un point d'entrée, la
+fonction de demande pas d'arguments donc son contenu est évalué tout de suite).
+
+```ocaml
+let message () = printf "Ceci est mon tout premier programme OCaml !!\n"
+```
+
+si on retire `()`, le message va apparaître dans la console quoi qu'il arrive,
+avant d'arriver au point d'entrée principal.
+
+### 1.4 Le rôle du point-virgule
+
+Le point-virgule permet de séparer des expressions qui renvoient `unit`, pour
+pouvoir les enchaîner. Ça ne permet **pas** de définir une variable locale, on
+verra dans le chapitre 2 comment faire ça. On va voir ici comment on peut s'en
+servir pour executer plusieurs prints :
+
+```ocaml
+printf "42 * 2 = %d\n" (double 42);
+printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne 16.5 23.75)
+```
+
+(Attention a ne pas mettre de `;` sur la dernière ligne, sinon la définition de
+fonction n'es jamais terminée)
+
+### 1.5 Conclusion
+
+Pour l'instant on sait faire des fonctions de bases et afficher le résultat
+dans la console. Le chapitre suivant porte sur les définitions locales et le
+pattern matching. Vous pourrez aussi retrouver (comme pour tous les autres
+chapitres) un fichier `.ml` qui utilise toutes le notions vu au cours du
+chapitre dans le dossier `ExemplesFinChapitres`.
