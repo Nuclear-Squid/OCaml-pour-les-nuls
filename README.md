@@ -70,16 +70,16 @@ de problèmes.
 ## 1.1. Les types de données de base
 
 ```
-+--------+----------------------+------------------------+-----+
-| Nom    | Description          | Operateurs             | fmt |
-+========+======================+========================+=====+
-| int    | nombre entiers       | +  -  *  /  **  ~- mod | %d  |
-| float  | nombre à virgule     | +. -. *. /. **. ~-.    | %f  |
-| bool   | true / flase         | ||  &&  not            | %b  |
-| char   | un caractère: 'a'    | <rien>                 | %c  |
-| string | chaîne de caractères | ^ (concaténation)      | %s  |
-| unit   | (ne renvoie rien)    | <rien>                 |     |
-+--------+----------------------+------------------------+-----+
++--------+----------------------+----------------------+-----+
+| Nom    | Description          | Operateurs           | fmt |
++========+======================+======================+=====+
+| int    | nombre entiers       | +  -  *  /  **  ~- % | %d  |
+| float  | nombre à virgule     | +. -. *. /. **. ~-.  | %f  |
+| bool   | true / flase         | ||  &&  not          | %b  |
+| char   | un caractère: 'a'    | <rien>               | %c  |
+| string | chaîne de caractères | ^ (concaténation)    | %s  |
+| unit   | (ne renvoie rien)    | <rien>               |     |
++--------+----------------------+----------------------+-----+
 ```
 
 Les opérateurs de comparaison sont :
@@ -184,3 +184,7 @@ dans la console. Le chapitre suivant porte sur les définitions locales et le
 pattern matching. Vous pourrez aussi retrouver (comme pour tous les autres
 chapitres) un fichier `.ml` qui utilise toutes le notions vu au cours du
 chapitre dans le dossier `ExemplesFinChapitres`.
+
+# 2. Définitions locales et pattern matching
+
+
