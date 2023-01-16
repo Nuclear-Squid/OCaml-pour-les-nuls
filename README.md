@@ -9,18 +9,19 @@
 	2. [Variables et fonctions](#12-variables-et-fonctions)
 	3. [Le rôle des parenthèses](#13-le-rôle-des-parenthèses)
 	4. [Le rôle du point-virgule](#14-le-rôle-du-point-virgule)
-	5. [Conclusion](#15-conclusion)
+	5. [Conditions simples avec `if`](#15-conditions-simples-avec-`if`)
+	6. [Conclusion](#16-conclusion)
 ---
 
 # 0. Préliminaires
 
 Commencez bien-évidemment par installer OCaml, la façon recommandé est de passer
 par [opam](https://opam.ocaml.org/doc/Install.html), le gestionnaire de paquet
-d'OCaml, puis l'utiliser pour installer : la dernière version d'OCaml et
+d'OCaml, puis l'utiliser pour installer, la dernière version d'OCaml et
 [dune](https://dune.build/), un des compilateur les plus populaires.
 
 Une fois que tout ça a été installé, lancez un terminal, allez dans le dossier
-dans lequel vous voulez stocker les tests que vous écrirez pendant ce tutoriel
+dans lequel vous voulez stocker les programmes que vous écrirez pendant ce tutoriel
 et lancez la commande `dune init project playground` (vous pouvez changer le nom
 `playground` par celui que vous voulez, c'est juste un example). Vous allez avoir
 beaucoup de nouveaux fichiers et dossiers, mais le plus important est le fichier
@@ -37,18 +38,19 @@ vous, vous pouvez lancer à la place `dune build && ./_build/default/bin/main.ex
 ## Avant de rentrer dans le vif du sujet
 
 Je recomande de toujours utiliser les librairies `Base` (une réécriture de l'API
-de la stdlib qui est beaucoup plus propre que l'API par défaut) et `Stdio` (qui
-permet d'avoir des vrais print et pas l'horreur qu'est le système par défaut).
-Pour pouvoir utiliser stdio, il faut le rajouter dans les librairies utilisé
-dans le fichier `playground/bin/dune`. Base est disponible par défaut.
+de la stdlib qui est beaucoup plus propre que l'API par défaut), `Stdio` (qui
+permet d'avoir des vrais print et pas l'horreur qu'est le système par défaut),
+et `Poly`, qui permet d'avoir des opérateurs de comparaisons polymorphiques (qui
+marchent sur plusieurs types de données). Pour pouvoir utiliser ces libs, il faut
+les déclarer dans le fichier `playground/bin/dune`. `Stdio` et `Poly` sont des
+sous-modules de `Base`, donc il faudra déclarer `Base` avant ces deux autres.
 
 Le nouveau fichier de base devrait ressembler à ça :
 
 ```ocaml
-open Base
+(* open Base *)
 open Stdio
-
-let _ = 2 ** 6 (* rustine pour *techniquement* utiliser Base *)
+(* open Poly *)
 
 let () = printf "Hello, world !!\n"
 ```
@@ -57,15 +59,18 @@ let () = printf "Hello, world !!\n"
 ces deux librairies sont utilisés. Vous pourrez trouver une documentation de
 la librairie `Base` [ici](https://ocaml.janestreet.com/ocaml-core/v0.13/doc/base/Base/index.html)
 
+---
+
 # 1. Les bases
 
 OCaml n'a pas de point d'entrée dédié, comme une fonction `main` en C, le langage
 va juste évaluer les expressions dans l'ordre dans lesquels ils les lis jusqu'à
 arriver à la fin du programme. La façon propre de démarrer le programme est avec
-l'expression `let () = ...`. L'expression ne demande pas d'arguments donc son
-contenu va être évalué tout de suite, l'expression à forcément type `unit`, et
-vu qu'elle n'a pas de nom, le fait qu'on ne l'utilise pas ailleurs ne pose pas
-de problèmes.
+l'expression `let () = ...`. L'expression `()` (prononcé `unit`) ne demande pas
+d'arguments donc son contenu va être évalué tout de suite. Elle ne porte pas de
+nom, donc OCaml ne va pas chercher à l'utiliser plus tard, mais ça va imposer à
+son contenu de renvoyer `unit`. (le type et la valeur `unit` sont la même chose,
+c'est un tuple vide donc ça représente la valeur 'rien').
 
 ## 1.1. Les types de données de base
 
@@ -84,11 +89,8 @@ de problèmes.
 
 Les opérateurs de comparaison sont : `=` (est égal à) `<>` (est différent à) `>` `>=` `<` `<=`
 
-Je recommande d'inclure le module `Poly` (avec la commande `open Poly` en
-entête de fichier), car ça permet de rendre ces opérateurs polymorphiques,
-c'est-à-dire compatible avec n'importe quel type de donnée (tant que c'est le
-même des deux côtés).
-
+remarque: Souvenez vous, `Poly` permet d'utiliser les opérateurs de comparaison
+sur n'importe quel type de données.
 
 note: `~-` et `~-.` renvoient l'opposée de la valeur
 
@@ -99,7 +101,8 @@ d'informations, regardez la [doc](https://ocaml.janestreet.com/ocaml-core/v0.13/
 
 OCaml est un langage fonctionnel, donc les variables sont immuables, c'est-à-dire
 qu'on ne peut pas les modifier. C'est parce que les variables de bases et les
-fonctions sont en fait des expressions, qu'on déclare avec le mot clé `let`.
+fonctions sont en fait des expressions, qu'on déclare avec le mot clé `let`. Une
+variable est donc juste une fonction sans argument qui renvoie directement une valeur.
 
 On peut déclarer une variable de la façon suivante :
 
@@ -116,8 +119,12 @@ Et une fonction de la façon suivante :
 ```ocaml
 (* syntaxe: let <nom_fn> <args> : <type_sortie> = <expr> *)
 let double (n: int): int = n * 2
-let moyenne a b = (a +. b) /. 2
+
 (* On peut aussi inférer le type des args et de sortie des fonctions *)
+let moyenne a b = (a +. b) /. 2.  (* 2. = 2.0 *)
+
+(* On peut inférer les chaque arguments et la sortie de fonction indépendemment *)
+let est_pair (n: int) = n % 2 = 0
 ```
 
 Pas besoin de mot-clé en particulier pour renvoyer une valeur, une fonction va
@@ -127,22 +134,9 @@ Pour appeler une fonction, il suffit d'écrire le nom de la fonction, puis donne
 les arguments séparés par un espace. Par exemple `double x` va renvoyer 138, et
 `moyenne y z` va renvoyer 23.06.
 
-## 1.3. Le rôle des parenthèses
+### Cas particulier : Les fonctions sans arguments
 
-On utilise les parenthèses pour rendre explicite les cas où l'ordre d'évaluation
-des arguments est ambiguë. Par exemple :
-
-```ocaml
-moyenne Float.of_int double 12 -5.
-(*
-- <expression> - 5. est vu comme un calcul et non le nombre -5 passé en argument
-- Float.of_int et double sont passé en argument à moyenne en même temps que 12,
-    ce qui veut dire que ces fonctions n'ont reçu aucun arguments.
-*)
-moyenne (Float.of_int (double 12)) (-5.) (* ici, les arguments sont valides *)
-```
-
-On utilise aussi `()` en tant qu'argument de fonction quand la fonction ne demande
+On utilise aussi `unit` en tant qu'argument de fonction quand la fonction ne demande
 aucun argument, car une expression qui ne demande pas d'argument va avoir le côté
 droit de l'équation évalué tout de suite, même si on n'appelle pas la fonction.
 (Rappel : c'est ça qui perment à `let () = ...` d'être un point d'entrée, la
@@ -152,34 +146,108 @@ fonction de demande pas d'arguments donc son contenu est évalué tout de suite)
 let message () = printf "Ceci est mon tout premier programme OCaml !!\n"
 ```
 
-si on retire `()`, non seulement le message va apparaître dans la console quoi
-avant d'arriver au point d'entrée principal, mais l'expression va être considéré
+si on retire `()`, non seulement le message va apparaître dans la console avant
+même d'arriver au point d'entrée principal, mais l'expression va être considéré
 comme une variable, donc on cherche à stocker la sortie de `printf`, qui est de
-type `unit`. Ça implique que `message` ne stock `<rien>`, et essayer d'utiliser
-`message` ne fera rien.
+type `unit`. Ça implique que `message` stock `unit` (soit la valeur 'rien'), et
+essayer d'utiliser `message` ne fera rien.
+
+## 1.3. Le rôle des parenthèses
+
+On utilise les parenthèses pour rendre explicite les cas où l'ordre d'évaluation
+des arguments est ambiguë. Par exemple :
+
+```ocaml
+let pythagore (cote1: float) (cote2: float): float =
+	Float.sqrt cote1 **. 2. +. cote2 **. 2.
+```
+
+Cette expression va être compilé et peut être compilé sans problèmes, mais les
+résultats sont… surprenant. En effet, `pythagore 3. 4.` va renvoyer `19.`. Le
+problème ici est que les arguments de l'expression ne sont pas évalués dans le
+bon ordre. Les opérateurs mathématiques séparent les expressions, chaque côté
+de l'opérateur va être évalué indépendemment, puis le calcul global est évalué.
+
+Notre implémentation de pythagore est donc équivalente à ça :
+
+```ocaml
+let pythagore (cote1: float) (cote2: float): float =
+	((Float.sqrt cote1)) **. (2.) +. ((cote2) **. (2.))
+```
+
+Pour corriger le problème, on peut manuellement inscrire les parenthèses nous-même :
+
+```ocaml
+let pythagore (cote1: float) (cote2: float): float =
+	Float.sqrt (cote1 **. 2. +. cote2 **. 2.)
+```
 
 ## 1.4. Le rôle du point-virgule
 
 Le point-virgule permet de séparer des expressions qui renvoient `unit`, pour
-pouvoir les enchaîner. Ça ne permet **pas** de définir une variable locale, on
-verra dans le chapitre 2 comment faire ça. On va voir ici comment on peut s'en
-servir pour executer plusieurs prints :
+pouvoir les enchaîner. Ça ne permet **pas** de définir une variable locale.
+On va voir ici comment on peut s'en servir pour executer plusieurs prints :
 
 ```ocaml
-message ();
-printf "42 * 2 = %d\n" (double 42);
-printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne 16.5 23.75)
+let () =
+	message ();
+	printf "42 * 2 = %d\n" (double 42);
+	printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne 16.5 23.75)
 ```
 
 (Attention a ne pas mettre de `;` sur la dernière ligne, sinon la définition de
 fonction n'es jamais terminée)
 
-## 1.5. Conclusion
+## 1.5. Conditions simples avec `if`
+
+Oui il y a des `if` en OCaml, c'est en général pas la meilleur façon de tester
+une condition (on verra au chapitre 2 comment faire du `pattern matching`), mais
+ça suffit quand on veut tester des choses simples, typiquement une expression
+booléenne. Par exemple :
+
+```ocaml
+(* Syntaxe : if <condition> then <expr_true> else <expr_false> *)
+
+(* Renvoie le double du nombre passé en argument si il est divisible par deux *)
+let double_si_pair n =
+    if n % 2 = 0
+    then double n
+    else n
+```
+
+Il n'existe pas d'équivalent de `elif` en OCaml, il faudrait donc si on veut en
+faire un, il faudrait imbriquer un autre `if` dans de bloc `else` :
+
+```ocaml
+(* Exemple de elif *)
+let signe_du_nombre n =
+    if n = 0
+    then "Zéro"
+    else if n > 0
+        then "Positif"
+        else "Négatif"
+
+```
+
+C'est globalement très moche, donc on verra dans le chapitre 2 des façon plus
+propre de tester pleins des conditions à la suite.
+
+Il est possible de ne pas mettre de bloc `else`, mais il faut que l'expression
+dans le bloc `then` doit renvoyer `unit`, par exemple :
+
+```ocaml
+(* La fonction failwith fait planter le programme avec le message d'erreur donné *)
+let assert_ue_bien_enseigne (ue: string): unit =
+    if String.lowercase ue = "inf201"
+    then failwith "Non, l'ue inf201 est pas bien enseigne."
+
+```
+
+## 1.6. Conclusion
 
 Pour l'instant on sait faire des fonctions de bases et afficher le résultat
-dans la console. Le chapitre suivant porte sur les définitions locales et le
-pattern matching. Vous pourrez aussi retrouver (comme pour tous les autres
-chapitres) un fichier `.ml` qui utilise toutes le notions vu au cours du
-chapitre dans le dossier `ExemplesFinChapitres`.
+dans la console. Le chapitre suivant porte sur le pattern matching.
 
-
+Vous pourrez aussi retrouver (comme pour tous les autres chapitres) un fichier
+`.ml` qui utilise toutes le notions vu au cours du chapitre dans le dossier
+`ExemplesFinChapitres`.
