@@ -10,20 +10,19 @@ let z = 23.75  (* ici le type est inféré *)
 (* Définition de fonctions *)
 let double (n: int): int = n * 2
 
-(* Fonction dont seul les types des arguments sont inférés *)
+(* On peut inférer les arguments et la sortie de fonction indépendemment *)
 let moyenne a b : float = (a +. b) /. 2.
 
+(* Voir tout inférer quand c'est évident *)
+let entier_est_pair n = n % 2 = 0
+
+(* Renvoie la longueur de l'hypotenus d'un triangle rectangle,
+   dont la longueur des deux autres côtés est donné *)
 let pythagore (cote1: float) (cote2: float): float =
 	Float.sqrt (cote1 **. 2. +. cote2 **. 2.)
 
-(* Fonction dont tous les types de données sont iférées *)
-let double_si_pair n =
-    if n % 2 = 0
-    then double n
-    else n
-
-(* Exemple de elif *)
-let signe_du_nombre n =
+(* Exemple de if, arguments et sortie inférés *)
+let signe_entier n =
     if n = 0
     then "Zéro"
     else if n > 0
@@ -41,8 +40,8 @@ let message () = printf "Ceci est mon tout premier programme OCaml !!\n"
 (* Point d'entrée du programme *)
 let () =
     message ();
-    printf "42 est pair, donc 42 * 2 = %d\n" (double_si_pair x);
+    printf "42 est-il pair : %b, et son double vaut %d\n" (entier_est_pair x) (double x);
     printf "La moyenne de 16.5 et 23.75 est %f\n" (moyenne y z);
-    printf "L'hypothenus du triangle yzt est %f\n" (pythagore 3. 4.);
-    printf "Le signe de -7 est %s\n" (signe_du_nombre (-7));
+    printf "La longueur de l'hypothenus du triangle comprenant y et z est %f\n" (pythagore 3. 4.);
+    printf "Le signe de -7 est %s\n" (signe_entier (-7));
     assert_ue_bien_enseigne "Inf202"

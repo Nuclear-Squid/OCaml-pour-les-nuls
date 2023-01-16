@@ -9,7 +9,7 @@
 	2. [Variables et fonctions](#12-variables-et-fonctions)
 	3. [Le rôle des parenthèses](#13-le-rôle-des-parenthèses)
 	4. [Le rôle du point-virgule](#14-le-rôle-du-point-virgule)
-	5. [Conditions simples avec `if`](#15-conditions-simples-avec-`if`)
+	5. [Conditions simples avec `if`](#15-conditions-simples-avec-if)
 	6. [Conclusion](#16-conclusion)
 ---
 
@@ -120,11 +120,11 @@ Et une fonction de la façon suivante :
 (* syntaxe: let <nom_fn> <args> : <type_sortie> = <expr> *)
 let double (n: int): int = n * 2
 
-(* On peut aussi inférer le type des args et de sortie des fonctions *)
-let moyenne a b = (a +. b) /. 2.  (* 2. = 2.0 *)
+(* On peut inférer chaque argument et sortie de fonction indépendemment *)
+let moyenne a b: float = (a +. b) /. 2.  (* 2. = 2.0 *)
 
-(* On peut inférer les chaque arguments et la sortie de fonction indépendemment *)
-let est_pair (n: int) = n % 2 = 0
+(* Voir tout inférer quand c'est évident *)
+let entier_est_pair (n: int) = n % 2 = 0
 ```
 
 Pas besoin de mot-clé en particulier pour renvoyer une valeur, une fonction va
@@ -203,24 +203,16 @@ fonction n'es jamais terminée)
 Oui il y a des `if` en OCaml, c'est en général pas la meilleur façon de tester
 une condition (on verra au chapitre 2 comment faire du `pattern matching`), mais
 ça suffit quand on veut tester des choses simples, typiquement une expression
-booléenne. Par exemple :
+booléenne.
+
+Il n'existe pas d'équivalent de `elif` en OCaml, donc si on veut en faire un, il
+faut imbriquer un autre `if` dans de bloc `else`, ce qui est globalement très
+moche, donc on verra dans le chapitre 2 des façon plus propre de tester pleins
+des conditions à la suite.
 
 ```ocaml
 (* Syntaxe : if <condition> then <expr_true> else <expr_false> *)
-
-(* Renvoie le double du nombre passé en argument si il est divisible par deux *)
-let double_si_pair n =
-    if n % 2 = 0
-    then double n
-    else n
-```
-
-Il n'existe pas d'équivalent de `elif` en OCaml, il faudrait donc si on veut en
-faire un, il faudrait imbriquer un autre `if` dans de bloc `else` :
-
-```ocaml
-(* Exemple de elif *)
-let signe_du_nombre n =
+let signe_entier n =
     if n = 0
     then "Zéro"
     else if n > 0
@@ -229,11 +221,8 @@ let signe_du_nombre n =
 
 ```
 
-C'est globalement très moche, donc on verra dans le chapitre 2 des façon plus
-propre de tester pleins des conditions à la suite.
-
 Il est possible de ne pas mettre de bloc `else`, mais il faut que l'expression
-dans le bloc `then` doit renvoyer `unit`, par exemple :
+dans le bloc `then` renvoi `unit`, par exemple :
 
 ```ocaml
 (* La fonction failwith fait planter le programme avec le message d'erreur donné *)
