@@ -5,7 +5,7 @@ existe car l'enseignement de ce langage qu'on a reçu à la fac était absolumen
 horrible (on a jamais compilé un programme, juste bidouillé un repl !!). OCaml
 étant un de mes langages préférés, je prends du temps pour transformer cette
 fiche de révisions pour mes potes en un cours complet du langage. Je vais
-globalement ignorer l'aspet impératif et objet du langage pour me concentrer sur
+globalement ignorer l'aspect impératif et objet du langage pour me concentrer sur
 l'aspet fonctionnel. Ce cours par du principe que l'on sait déjà coder dans un
 langage impératif, et qu'on cherche à apprendre un premier langage fonctionnel.
 Je vais aussi présenter des notions qui ne seront pas vu par les élèves de la fac
@@ -28,12 +28,9 @@ dossier comporte un fichier `cours.md` qui contient le cours de ce chapitre et
 un fichier `main.ml`, qui est un fichier qu'on peut importer dans un projet `dune`
 qui utilise toutes les notions vues pendant le cours, pour pouvoir les tester facilement.
 
-Le chapitre 0 détaille un peu plus les prérequis pour ce cours, je vous encourage
-à le lire. Ce fichier readme sert de 'fiche de révision', qui récapitule vite
-fait les notions vu pendant ce cours. (Le fichier `ocamlCheatSheet` est la fiche
-de révision que j'ai fait avant de reprendre ce cours à zéro. Les informations
-sont mal expliqué, ne lisez son contenu que si j'ai pas encore fait un cours sur
-une notion que vous cherchez)
+Le chapitre 0 détaille un peu plus les prérequis pour ce cours (je vous encourage
+à le lire), et ce fichier readme sert de 'fiche de révision', qui récapitule vite
+fait les notions vu pendant ce cours.
 
 ---
 # Table des matières
@@ -45,7 +42,7 @@ une notion que vous cherchez)
 
 # 1. Les bases
 
-Point d'entrée du programme : l'expression `let () = ...`
+Point d'entrée du programme : `let () = <expression>`
 
 Les types de données de base :
 

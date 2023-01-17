@@ -247,5 +247,4 @@ let signe_entier = function
 	| _            -> "Négatif"
 ```
 
-Pour l'instant c'est juste du `function` est juste du sucre syntaxique, donc vous
-pouvez l'ignorer si vous en avez envie.
+`function` est juste du sucre syntaxique, donc vous pouvez l'ignorer si vous le voulez.
