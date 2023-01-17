@@ -12,16 +12,13 @@ let (alarme_heure, alarme_minute, _) = horraire_alarme
 let ajoute_horraires horraire1 horraire2 =
     let (heures1, minutes1, secondes1) = horraire1
     and (heures2, minutes2, secondes2) = horraire2
+    and div_euclidienne valeur diviseur = (valeur / diviseur, valeur % diviseur)
     in
-    let nouvelles_secondes = (secondes1 + secondes2) % 60
-    and minutes_a_rajouter = (secondes1 + secondes2) / 60
+    let min_en_plus, secondes = div_euclidienne (secondes1 + secondes2) 60 in
+    let heures_en_plus, minutes = div_euclidienne (minutes1 + minutes2 + min_en_plus) 60 in
+    let _, heures = div_euclidienne (heures1 + heures2 + heures_en_plus) 24
     in
-    let nouvelles_minutes = (minutes1 + minutes2 + minutes_a_rajouter) % 60
-    and heures_a_rajouter = (minutes1 + minutes2 + minutes_a_rajouter) / 60
-    in
-    let nouvelles_heures = (heures1 + heures2 + heures_a_rajouter) % 60
-    in
-    (nouvelles_heures, nouvelles_minutes, nouvelles_secondes)
+    (heures, minutes, secondes)
 
 (* Pas besoin de décompser alarme, car on veut juste la transmettre à ajoute_horarires *)
 let snooze alarme = ajoute_horraires alarme (0, 5, 0)
@@ -40,13 +37,13 @@ let peut_dejeuner horraire =
 (* exemple de match avec plusieurs patterns par branches *)
 (* On cherche ici à vérifier si une date est valide *)
 let date_valide (mois: int) (jour: int): bool = 
-    let jour_compris_dans borne_max jour : bool =
+    let jour_valide borne_max jour : bool =
         1 <= jour && jour <= borne_max
     in 
     match mois with
-    | 2                           -> jour_compris_dans 28 jour
-    | 4 | 6 | 9 | 11              -> jour_compris_dans 30 jour
-    | 1 | 3 | 5 | 7 | 8 | 10 | 12 -> jour_compris_dans 31 jour
+    | 2                           -> jour_valide 28 jour
+    | 4 | 6 | 9 | 11              -> jour_valide 30 jour
+    | 1 | 3 | 5 | 7 | 8 | 10 | 12 -> jour_valide 31 jour
     | _ -> false  (* mois invalide *) 
 
 (* Une fonction du chapitre précédent, mais en mieux grace aux matchs ! *)
