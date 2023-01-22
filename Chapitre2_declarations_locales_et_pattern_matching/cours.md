@@ -117,7 +117,7 @@ la sortie de ce bloc, donc `let x = 12 and y = x + 1 in ...` est invalide, puisq
 suivante peut être une autre déclaration locale, donc dans ce petit exemple, on peut
 faire `let x = 12 in let y = x + 1 in ...`.
 
-Avec des définitions locale, on peut réécrire `ajoute_horraires` de cette façon :
+Avec des déclarations locales, on peut réécrire `ajoute_horraires` de cette façon :
 
 ```ocaml
 (* Définition plus propre de ajoute_horraires *)
@@ -147,10 +147,10 @@ let snooze alarme = ajoute_horraires alarme (0, 5, 0)
 
 On peut dire que `snooze` est une `application partielle` de `ajoute_horraires`,
 car c'est comme si on appelait `ajoute_horraires` avec une partie des arguments
-déjà spécifiés, et on ne fait que préciser ceux qu'il manque. Les applications
-partielles sont une des notions les plus importantes en OCaml, donc on va souvent
-y revenir. Pour l'instant, souvenez vous juste que ça permet d'avoir un joli nom
-et des arguments plus simples sur un cas particulier courant d'une fonction.
+déjà spécifiés, et on ne fait que préciser ceux qu'ils manquent. Les applications
+partielles sont une des notions les plus importantes en OCaml, donc on va y revenir.
+Pour l'instant, souvenez vous juste que ça permet d'avoir un joli nom et des
+arguments plus simples sur un cas particulier courant d'une fonction.
 
 # 4. Match-Expressions
 

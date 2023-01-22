@@ -78,6 +78,9 @@ Pour appeler une fonction, il suffit d'écrire le nom de la fonction, puis donne
 les arguments séparés par un espace. Par exemple `double x` va renvoyer 138, et
 `moyenne y z` va renvoyer 23.06.
 
+Attention à ne pas commencer un nom de variable par une lettre en majuscule, il
+n'y a que quelques outils en OCaml qui doivent commencer par une lettre majuscule.
+
 ## Cas particulier : Les fonctions sans arguments
 
 On utilise aussi `unit` en tant qu'argument de fonction quand la fonction ne demande

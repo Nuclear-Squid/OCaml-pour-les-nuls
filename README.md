@@ -37,6 +37,7 @@ fait les notions vu pendant ce cours.
 
 1. [Les bases](#1-les-bases)
 2. [Définitions locales et pattern matching](#2-définitions-locales-et-pattern-matching)
+3. [Types de données customs](#3-types-de-données-customs)
 
 ---
 
@@ -115,12 +116,12 @@ let signe_entier n =
 
 ---
 
-## 2. Définitions locales et pattern matching
+# 2. Définitions locales et pattern matching
 
 Décomposition de valeurs :
 
 ```ocaml
-(* Une variable qui contient un tuple (ensemble fini de valeurs) *)
+(* Une variable qui contient un tuple (ensemble fini et ordonné de valeurs) *)
 let horraire_alarme = (6, 30, 00)  
 
 (* Tuple de variables de la même taille que la valeur à décomposer, avec les 
@@ -148,7 +149,7 @@ Match-expressions :
 ```ocaml
 (* Syntaxe: `match <expr> with`, puis pour chaque branche du match :
    | <pattern_1> | ... | <pattern_n> -> <expr_associé>, ou
-   | <pattern_1> when <condition -> <expr_associé> *)
+   | <pattern_1> when <condition>    -> <expr_associé> *)
 let signe_entier n =
 	match n with
 	| 0            -> "Zéro"     (* quand n = 0 *)
@@ -156,3 +157,63 @@ let signe_entier n =
 	| _            -> "Négatif"  (* dans tous les cas restants (ici n < 0) *)
 ```
 
+---
+
+# 3. Types de données customs
+
+Signature d'un tuple :
+
+```ocaml
+(* syntaxe : <type_1> * … * <type_n> *)
+let origine: int * int = (0, 0)
+```
+
+Définir un type :
+
+```ocaml
+(* syntaxe : type <parametres> <nom_type> = … *)
+
+(* type alias *)
+type point = int * int
+
+(* enum : *)
+type actions =
+	| Avancer of int  (* cette variante va encapsuler un int *)
+	| Gauche
+	| Droite
+
+(* struct : *)
+type robot = {
+	nom: string;
+	position: point;
+}
+
+(* GADTs : *)
+type 'a option =
+	| Some of 'a
+	| None
+```
+
+Matcher un enum :
+
+```ocaml
+let effectue_action (action: actions) (r: robot) =
+	match action with
+	| Avancer n_cases -> aller_tout_droit n_cases r
+	| Gauche -> tourner_gauche r
+	| Droite -> tourner_droite r
+```
+
+Opérations sur un struct :
+
+```ocaml
+let tourner_droite (r: robot) =
+	let { orientation; _ } = r in  (* décomposition avec field punning *)
+	let nouvelle_orientation =
+		match orientation with
+		| Nord  -> Est
+		| Est   -> Sud
+		| Sud   -> Ouest
+		| Ouest -> Nord
+	in { r with orientation = nouvelle_orientation }  (* update fonctionnel *)
+```
